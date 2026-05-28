@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baby Catcher — App Concept Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#FFF7F5;color:#2D2A3E;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-50%;right:-30%;width:80vw;height:80vw;border-radius:50%;background:radial-gradient(circle,rgba(255,182,193,0.3) 0%,rgba(255,218,224,0.15) 40%,transparent 70%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;bottom:-40%;left:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(255,154,170,0.15) 0%,transparent 60%);pointer-events:none;z-index:0}
+.page{position:relative;z-index:1;max-width:480px;width:100%}
+.header{text-align:center;margin-bottom:32px}
+.header .tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#D4667A;margin-bottom:8px}
+.header h1{font-family:'DM Serif Display',serif;font-size:32px;color:#2D2A3E;line-height:1.15;margin-bottom:8px}
+.header h1 em{font-style:italic;background:linear-gradient(135deg,#FF8FA3,#E8627C,#D4667A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header p{font-size:14px;color:#8A8698;line-height:1.6}
+/* PHONE */
+.phone{margin:0 auto;width:300px;position:relative}
+.phone-body{background:linear-gradient(160deg,#E8E4E0 0%,#D8D4D0 100%);border-radius:38px;padding:4px;box-shadow:0 30px 80px rgba(212,102,122,0.15),0 8px 24px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(200,196,192,0.4);position:relative}
+.phone-body::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:72px;height:20px;background:#1a1a1a;border-radius:12px;z-index:10}
+.phone-body::after{content:'';position:absolute;top:18px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:rgba(30,30,40,0.6);z-index:11;margin-left:24px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4)}
+.screen{border-radius:35px;overflow:hidden;background:#fff;position:relative;border:0.5px solid rgba(0,0,0,0.08)}
+.screen-inner{min-height:540px;display:flex;flex-direction:column}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 6px;font-size:11px;font-weight:600;color:#2D2A3E}
+.app-header{padding:4px 18px 6px;display:flex;align-items:center;justify-content:space-between}
+.app-logo{font-family:'DM Serif Display',serif;font-size:16px;background:linear-gradient(135deg,#FF8FA3,#E8627C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.app-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD6DE,#FFB6C1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#D4667A}
+.hero-card{margin:6px 14px;padding:20px 16px;background:linear-gradient(135deg,#FFF0F3 0%,#FFE4EA 50%,#FFD6DE 100%);border-radius:20px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,182,193,0.2)}
+.hero-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.4)}
+.hero-card .week{font-family:'DM Serif Display',serif;font-size:28px;color:#2D2A3E;line-height:1}
+.hero-card .trim{font-size:10px;color:#D4667A;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.hero-card .emoji{font-size:40px;margin:10px 0 4px}
+.hero-card .size{font-size:12px;color:#8A8698}
+.hero-card .weight{font-size:13px;color:#D4667A;font-weight:700;margin-top:2px}
+.stats-row{display:flex;gap:8px;margin:8px 14px}
+.stat-pill{flex:1;background:#fff;border:1px solid rgba(212,102,122,0.1);border-radius:14px;padding:10px 6px;text-align:center;box-shadow:0 2px 8px rgba(212,102,122,0.04)}
+.stat-pill .val{font-family:'DM Serif Display',serif;font-size:20px;color:#2D2A3E;line-height:1}
+.stat-pill .lbl{font-size:9px;color:#8A8698;margin-top:2px}
+.doc-note{margin:8px 14px;padding:12px 14px;background:#fff;border:1px solid rgba(212,102,122,0.1);border-left:3px solid #FF8FA3;border-radius:0 14px 14px 0;box-shadow:0 2px 8px rgba(212,102,122,0.04)}
+.doc-note .from{font-size:9px;color:#D4667A;font-weight:700;letter-spacing:1px;margin-bottom:3px}
+.doc-note .txt{font-size:11px;color:#5A5768;line-height:1.55;font-style:italic}
+.cta-btn{margin:8px 14px;padding:12px;background:linear-gradient(135deg,#FF8FA3,#E8627C);border-radius:14px;text-align:center;font-size:12px;font-weight:700;color:#fff;letter-spacing:0.5px;box-shadow:0 6px 20px rgba(232,98,124,0.3)}
+.tab-bar{margin-top:auto;padding:8px 12px 4px;display:flex;justify-content:space-around;border-top:1px solid rgba(212,102,122,0.08)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:#B8B4C4;padding:4px 8px}
+.tab.on{color:#D4667A;font-weight:700}
+.tab .ti{font-size:16px}
+.home-bar{width:100px;height:4px;border-radius:2px;background:rgba(45,42,62,0.12);margin:4px auto 6px}
+/* TRACKER SCREEN */
+.track-item{display:flex;align-items:center;gap:8px;margin:0 14px;padding:8px 10px;background:#fff;border:1px solid rgba(212,102,122,0.06);border-radius:14px;margin-bottom:4px;box-shadow:0 1px 4px rgba(212,102,122,0.03)}
+.track-ico{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.track-lbl{flex:1;min-width:0}
+.track-lbl strong{font-size:12px;color:#2D2A3E;display:block}
+.track-lbl small{font-size:10px;color:#8A8698}
+.track-badge{font-size:9px;font-weight:700;padding:4px 10px;border-radius:999px;flex-shrink:0}
+.tb-pink{background:rgba(255,143,163,0.12);color:#D4667A}
+.tb-green{background:rgba(76,175,80,0.1);color:#4CAF50}
+.tb-blue{background:rgba(100,149,237,0.1);color:#6495ED}
+.tb-amber{background:rgba(240,192,96,0.1);color:#D4A944}
+/* NAVIGATION */
+.phone-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px}
+.pn-dot{width:8px;height:8px;border-radius:50%;background:rgba(212,102,122,0.15);cursor:pointer;transition:all 0.2s}
+.pn-dot.on{background:#D4667A;box-shadow:0 0 8px rgba(212,102,122,0.4)}
+.pn-arr{width:30px;height:30px;border-radius:50%;border:1px solid rgba(212,102,122,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#8A8698;transition:all 0.2s;background:#fff}
+.pn-arr:hover{border-color:#D4667A;color:#D4667A}
+.pn-label{text-align:center;font-size:11px;color:#8A8698;margin-top:6px}
+.screen-track{display:flex;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);width:100%}
+.screen-slide{min-width:100%;max-width:100%;flex-shrink:0;overflow:hidden}
+.footer-note{text-align:center;margin-top:24px;font-size:11px;color:#B8B4C4;line-height:1.5;max-width:320px}
+.footer-note strong{color:#D4667A}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="header">
+<div class="tag">App Concept Preview</div>
+<h1>Baby Catcher — <em>Elegant. Warm. Trusted.</em></h1>
+<p>A glossy pink gradient and white theme designed for expectant mothers. Previewed on iPhone 17 Pro Max.</p>
+</div>
+
+<div class="phone">
+<div class="phone-body">
+<div class="screen"><div class="screen-track" id="sTrack">
+
+<!-- SCREEN 1: HOME -->
+<div class="screen-slide"><div class="screen-inner">
+<div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div>
+<div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div>
+<div class="hero-card">
+<div class="trim">Third Trimester</div>
+<div class="week">Week 28</div>
+<div class="emoji">🍈</div>
+<div class="size">Baby is the size of an eggplant</div>
+<div class="weight">~2.2 lbs · 14.8 in</div>
+</div>
+<div class="stats-row">
+<div class="stat-pill"><div class="val">28</div><div class="lbl">Week</div></div>
+<div class="stat-pill"><div class="val">70%</div><div class="lbl">Done</div></div>
+<div class="stat-pill"><div class="val">96</div><div class="lbl">To Go</div></div>
+</div>
+<div class="doc-note">
+<div class="from">📖 DR. HERVEY'S NOTE</div>
+<div class="txt">"Your baby is now dreaming. REM sleep patterns are forming this week, meaning your little one is processing the world before they even see it."</div>
+</div>
+<div class="cta-btn">View Full Week Guide →</div>
+<div class="tab-bar"><div class="tab on"><div class="ti">🏠</div>Home</div><div class="tab"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab"><div class="ti">💬</div>Stories</div><div class="tab"><div class="ti">📋</div>Plan</div></div>
+<div class="home-bar"></div>
+</div></div>
+
+<!-- SCREEN 2: TRACKERS -->
+<div class="screen-slide"><div class="screen-inner">
+<div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div>
+<div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div>
+<div style="padding:4px 14px 8px;font-family:'DM Serif Display',serif;font-size:20px;color:#2D2A3E">My Trackers</div>
+<div class="track-item"><div class="track-ico" style="background:rgba(76,175,80,0.08)">👶</div><div class="track-lbl"><strong>Kick Counter</strong><small>Last: 12 kicks in 18 min</small></div><div class="track-badge tb-green">Start</div></div>
+<div class="track-item"><div class="track-ico" style="background:rgba(255,143,163,0.08)">⏱️</div><div class="track-lbl"><strong>Contraction Timer</strong><small>Not active</small></div><div class="track-badge tb-pink">Start</div></div>
+<div class="track-item"><div class="track-ico" style="background:rgba(100,149,237,0.08)">💧</div><div class="track-lbl"><strong>Water Intake</strong><small>5 of 8 glasses today</small></div><div class="track-badge tb-blue">Log</div></div>
+<div class="track-item"><div class="track-ico" style="background:rgba(240,192,96,0.08)">😴</div><div class="track-lbl"><strong>Sleep Log</strong><small>Last night: 6.5 hours</small></div><div class="track-badge tb-amber">Log</div></div>
+<div class="track-item"><div class="track-ico" style="background:rgba(155,111,192,0.08)">🩺</div><div class="track-lbl"><strong>Symptom Diary</strong><small>3 entries this week</small></div><div class="track-badge tb-pink">Add</div></div>
+<div class="track-item"><div class="track-ico" style="background:rgba(255,143,163,0.08)">🧘</div><div class="track-lbl"><strong>Mood Check</strong><small>Today: Feeling good ☀️</small></div><div class="track-badge tb-green">Log</div></div>
+
+<div class="tab-bar"><div class="tab"><div class="ti">🏠</div>Home</div><div class="tab on"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab"><div class="ti">💬</div>Stories</div><div class="tab"><div class="ti">📋</div>Plan</div></div>
+<div class="home-bar"></div>
+</div></div>
+
+<!-- SCREEN 3: BIRTH STORIES -->
+<div class="screen-slide"><div class="screen-inner">
+<div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div>
+<div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div>
+<div style="padding:4px 14px 2px;font-family:'DM Serif Display',serif;font-size:20px;color:#2D2A3E">Birth Stories</div>
+<div style="padding:0 14px 8px;font-size:9px;color:#B8B4C4;letter-spacing:1.5px">FROM HER BODY, HER BABY</div>
+<div style="margin:0 14px 5px;padding:11px;background:linear-gradient(135deg,#FFF5F7,#FFE8ED);border:1px solid rgba(255,143,163,0.15);border-radius:16px"><div style="font-family:'DM Serif Display',serif;font-size:15px;color:#2D2A3E;margin-bottom:4px">Kieara's Story</div><div style="font-size:11px;color:#5A5768;line-height:1.55;font-style:italic">"I will not push without an epidural." Her voice cut through the urgency of the room...</div><div style="margin-top:8px"><span class="track-badge tb-pink" style="font-size:10px;padding:5px 12px">Read Full Story →</span></div></div>
+<div style="margin:0 14px 5px;padding:11px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-radius:16px"><div style="font-family:'DM Serif Display',serif;font-size:15px;color:#2D2A3E;margin-bottom:4px">Amara's Choice</div><div style="font-size:11px;color:#5A5768;line-height:1.55;font-style:italic">"Everyone told me what I should do. My midwife asked me what I wanted."</div><div style="margin-top:8px"><span class="track-badge tb-pink" style="font-size:10px;padding:5px 12px">Read Full Story →</span></div></div>
+<div style="margin:0 14px 5px;padding:11px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-radius:16px"><div style="font-family:'DM Serif Display',serif;font-size:15px;color:#2D2A3E;margin-bottom:4px">Denise & The Plan</div><div style="font-size:11px;color:#5A5768;line-height:1.55;font-style:italic">"I walked in with a plan. They tried to change it. I held my ground."</div><div style="margin-top:8px"><span class="track-badge tb-pink" style="font-size:10px;padding:5px 12px">Read Full Story →</span></div></div>
+
+<div class="tab-bar"><div class="tab"><div class="ti">🏠</div>Home</div><div class="tab"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab on"><div class="ti">💬</div>Stories</div><div class="tab"><div class="ti">📋</div>Plan</div></div>
+<div class="home-bar"></div>
+</div></div>
+
+<!-- SCREEN 4: BIRTH PLAN -->
+<div class="screen-slide"><div class="screen-inner">
+<div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div>
+<div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div>
+<div style="padding:4px 14px 2px;font-family:'DM Serif Display',serif;font-size:20px;color:#2D2A3E">My Birth Plan</div>
+<div style="padding:0 14px 8px;font-size:9px;color:#B8B4C4;letter-spacing:1.5px">AUTONOMY FRAMEWORK</div>
+<div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #4CAF50;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#4CAF50;margin-bottom:4px">✓ Labor Preferences</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Freedom to move · Intermittent monitoring · Delayed cord clamping · Skin-to-skin immediately</div></div>
+<div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #D4667A;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#D4667A;margin-bottom:4px">⏳ Pain Management</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Open to epidural if requested · No pressure · Support person present always</div></div>
+<div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #9B6FC0;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#9B6FC0;margin-bottom:4px">🏥 If Plans Change</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Explain all options · Include me in every decision · Informed consent required</div></div>
+<div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #6495ED;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#6495ED;margin-bottom:4px">🍼 Postpartum Wishes</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Breastfeeding support · Golden hour uninterrupted · Partner stays overnight</div></div>
+<div class="cta-btn" style="margin-top:4px">Export Birth Plan as PDF →</div>
+<div class="tab-bar"><div class="tab"><div class="ti">🏠</div>Home</div><div class="tab"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab"><div class="ti">💬</div>Stories</div><div class="tab on"><div class="ti">📋</div>Plan</div></div>
+<div class="home-bar"></div>
+</div></div>
+
+</div></div>
+</div>
+<div class="phone-nav">
+<div class="pn-arr" onclick="pNav(-1)">←</div>
+<div style="display:flex;gap:6px"><div class="pn-dot on" onclick="pTo(0)"></div><div class="pn-dot" onclick="pTo(1)"></div><div class="pn-dot" onclick="pTo(2)"></div><div class="pn-dot" onclick="pTo(3)"></div></div>
+<div class="pn-arr" onclick="pNav(1)">→</div>
+</div>
+<div class="pn-label" id="pLabel">1 / 4 — Week Dashboard</div>
+</div>
+
+<div class="footer-note"><strong>Note:</strong> This is a sample concept mockup to illustrate design direction. The actual UI, workflow, and branding will be developed collaboratively with Dr. Hervey after onboarding.</div>
+</div>
+
+<script>
+const labels=['Week Dashboard','My Trackers','Birth Stories','Birth Plan Builder'];
+let cur=0;const total=4;
+function update(){document.getElementById('sTrack').style.transform=`translateX(-${cur*100}%)`;document.querySelectorAll('.pn-dot').forEach((d,i)=>d.classList.toggle('on',i===cur));document.getElementById('pLabel').textContent=`${cur+1} / ${total} — ${labels[cur]}`}
+function pNav(d){cur+=d;if(cur<0)cur=total-1;if(cur>=total)cur=0;update()}
+function pTo(i){cur=i;update()}
+</script>
+</body>
+</html>
