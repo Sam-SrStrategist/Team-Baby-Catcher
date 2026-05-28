@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baby Catcher — Mobile App Development Proposal | Kinetic Digital Publishers</title>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","wy5ac1sz4o");</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#D4667A;--pink-light:#FF8FA3;--pink-deep:#E8627C;--pink-soft:#FFD6DE;
+  --gradient:linear-gradient(135deg,#FF8FA3 0%,#E8627C 50%,#D4667A 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(255,143,163,0.08) 0%,rgba(232,98,124,0.04) 100%);
+  --glow:rgba(212,102,122,0.20);--glow-strong:rgba(232,98,124,0.30);
+  --green:#4CAF50;--gold:#D4A944;--red:#E63946;--purple:#9B6FC0;--blue:#6495ED;
+  --bg:#FFF7F5;--bg-card:#fff;--bg-deep:#FFF0F3;
+  --text:#2D2A3E;--text-dim:#5A5768;--text-muted:#8A8698;--text-faint:#B8B4C4;
+  --border:rgba(212,102,122,0.08);--border-light:rgba(212,102,122,0.06);--border-accent:rgba(212,102,122,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.78;font-size:20px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--pink-soft);color:var(--pink-deep)}
+.container{max-width:920px;margin:0 auto;padding:0 28px}
+@keyframes ambientGlow{0%,100%{opacity:0.6}50%{opacity:1}}
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:900;background:rgba(255,247,245,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1100px;margin:0 auto;padding:12px 28px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:700;font-size:14px;letter-spacing:0.5px;text-transform:uppercase;color:var(--text-dim)}
+.brand em{font-style:normal;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0 4px}
+.nav{display:flex;gap:18px;font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}
+.nav a{transition:color 0.2s}.nav a:hover{color:var(--pink)}
+@media(max-width:768px){.nav{display:none}}
+/* AUDIO PLAYER */
+#audio-player{position:fixed;bottom:24px;right:24px;z-index:9000;width:340px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border-accent);box-shadow:0 12px 48px rgba(212,102,122,0.12);transform:translateY(0);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);overflow:hidden}
+#audio-player.visible{transform:translateY(0)}
+#audio-player.minimized{width:56px;height:56px;border-radius:50%;cursor:pointer;overflow:hidden}
+#audio-player.minimized .ap-full{opacity:0;pointer-events:none;height:0}
+#audio-player.minimized .ap-mini{display:flex}
+.ap-mini{display:none;width:56px;height:56px;align-items:center;justify-content:center;background:var(--gradient);color:#fff;font-size:1.2rem;font-weight:700}
+.ap-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.ap-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,143,163,0.1);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;font-weight:700}
+.ap-title{flex:1;min-width:0}.ap-title h4{font-size:0.82rem;font-weight:600;color:var(--text);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ap-title p{font-size:0.7rem;color:var(--text-muted);margin:0}
+.ap-minimize{width:28px;height:28px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.ap-minimize:hover{background:rgba(255,143,163,0.06);color:var(--pink)}
+.ap-controls{padding:12px 16px;display:flex;align-items:center;gap:12px}
+.ap-play-btn{width:38px;height:38px;border-radius:50%;background:var(--gradient);color:#fff;border:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.ap-play-btn:hover{transform:scale(1.05);box-shadow:0 4px 16px var(--glow)}
+.ap-play-btn svg{width:16px;height:16px;fill:currentColor}
+.ap-progress-wrap{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+.ap-progress-bar{width:100%;height:5px;border-radius:3px;background:rgba(212,102,122,0.1);cursor:pointer;position:relative;overflow:hidden}
+.ap-progress-fill{position:absolute;left:0;top:0;bottom:0;background:var(--gradient);border-radius:3px;width:0%;transition:width 0.3s linear}
+.ap-time{display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
+.ap-chapters{max-height:0;overflow:hidden;transition:max-height 0.4s ease}
+.ap-chapters.open{max-height:55vh;border-top:1px solid var(--border);overflow-y:auto}
+.ap-chapters-toggle{width:100%;padding:8px 16px;background:rgba(255,143,163,0.02);border:none;border-top:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:600;color:var(--pink);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s}
+.ap-chapters-toggle:hover{background:rgba(255,143,163,0.06)}
+.ap-chapters-list{padding:8px 0}
+.ap-chapter{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:background 0.15s;border-left:3px solid transparent}
+.ap-chapter:hover{background:rgba(255,143,163,0.04)}
+.ap-chapter.active{background:rgba(255,143,163,0.06);border-left-color:var(--pink)}
+.ap-chapter-time{font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);min-width:42px;flex-shrink:0}
+.ap-chapter-label{font-size:0.78rem;color:var(--text-dim);font-weight:500}
+.ap-chapter.active .ap-chapter-label{color:var(--pink);font-weight:600}
+.ap-chapter-dot{width:6px;height:6px;border-radius:50%;background:rgba(212,102,122,0.15);flex-shrink:0}
+.ap-chapter.active .ap-chapter-dot{background:var(--pink)}
+@media(max-width:480px){#audio-player{width:calc(100% - 32px);right:16px;bottom:16px}}
+/* HERO */
+.hero{position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0}
+.hero-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(255,143,163,0.2) 0%,transparent 55%),radial-gradient(ellipse at 80% 70%,rgba(255,214,222,0.2) 0%,transparent 55%),radial-gradient(ellipse at 50% 50%,rgba(232,98,124,0.06) 0%,transparent 70%);animation:ambientGlow 6s ease-in-out infinite}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 30%,transparent 70%,var(--bg) 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(212,102,122,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,102,122,0.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse at center,black 40%,transparent 80%)}
+.hero-inner{position:relative;z-index:2;padding:120px 0 100px;width:100%}
+.hero-tag{display:inline-flex;align-items:center;gap:10px;padding:7px 16px;border-radius:999px;background:rgba(255,143,163,0.08);border:1px solid var(--border-accent);color:var(--pink);font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:32px;font-family:'JetBrains Mono',monospace}
+.hero-tag .dot{width:6px;height:6px;border-radius:50%;background:var(--pink);box-shadow:0 0 10px var(--pink-light);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(42px,7vw,80px);line-height:1.05;margin-bottom:32px}
+.hero h1 em{font-style:italic;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:22px;color:var(--text-dim);max-width:680px;line-height:1.6;margin-bottom:48px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:32px;margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
+.hero-meta-item{display:flex;flex-direction:column;gap:6px}
+.hero-meta-item .label{font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.hero-meta-item .value{font-size:15px;color:var(--text);font-weight:600}
+.hero-meta-item .value em{font-style:normal;color:var(--pink)}
+/* SECTIONS */
+section{padding:80px 0;position:relative}
+.section-label{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink);margin-bottom:14px}
+.section-label::before{content:'';width:24px;height:1px;background:var(--gradient)}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(32px,4.5vw,52px);line-height:1.1;margin-bottom:20px}
+.section-title em{font-style:italic;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-lead{font-size:20px;color:var(--text-dim);line-height:1.65;margin-bottom:36px;max-width:760px}
+.section-body p{font-size:18px;color:var(--text-dim);line-height:1.75;margin-bottom:18px}
+.section-body p strong{color:var(--text);font-weight:600}
+.section-body p em{font-style:normal;color:var(--pink);font-weight:500}
+.section-body h3{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-bottom:12px}
+.divider-spacer{padding:40px 0;display:flex;align-items:center;justify-content:center;position:relative}
+.divider-spacer::before{content:'';position:absolute;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(255,143,163,0.25) 20%,rgba(232,98,124,0.35) 50%,rgba(255,143,163,0.25) 80%,transparent 100%);box-shadow:0 0 12px rgba(255,143,163,0.12)}
+.divider-spacer::after{content:'';position:relative;z-index:1;width:6px;height:6px;border-radius:50%;background:var(--pink);box-shadow:0 0 12px var(--glow),0 0 30px rgba(255,143,163,0.15)}
+/* LETTER */
+.letter{background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--pink-light);border-radius:0 16px 16px 0;padding:44px 40px;margin:36px 0;box-shadow:0 4px 24px rgba(212,102,122,0.04)}
+.letter p{font-size:20px;line-height:1.85;color:var(--text-dim);margin-bottom:16px}
+.letter p strong{color:var(--text)}.letter p em{font-style:normal;color:var(--pink);font-weight:500}
+.letter .signature{margin-top:28px;padding-top:20px;border-top:1px solid var(--border)}
+.letter .signature .name{font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.letter .signature .role{font-size:13px;color:var(--text-muted)}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:28px 0}
+@media(max-width:768px){.stat-grid{grid-template-columns:1fr}}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;text-align:left;transition:all 0.3s;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.stat-card:hover{border-color:var(--border-accent);transform:translateY(-3px);box-shadow:0 8px 32px var(--glow)}
+.stat-card .num{font-family:'DM Serif Display',serif;font-size:42px;line-height:1;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.stat-card .lbl{font-size:16px;color:var(--text-dim);line-height:1.45}
+.stat-card .src{font-size:10px;color:var(--text-faint);margin-top:8px;font-family:'JetBrains Mono',monospace}
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;margin:18px 0;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;font-size:15px;table-layout:fixed}
+.data-table th{background:rgba(255,143,163,0.06);color:var(--pink);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:14px 18px;text-align:left;border-bottom:1px solid var(--border-accent);font-weight:700;white-space:nowrap}
+.data-table td{padding:14px 18px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top;font-size:14px;line-height:1.55;word-wrap:break-word}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,143,163,0.02)}
+.data-table .co-name{color:var(--text);font-weight:600}
+.data-table .num{color:var(--pink);font-weight:600;font-family:'JetBrains Mono',monospace}
+.data-table-wrap{overflow-x:auto;margin:20px 0}
+@media(max-width:768px){.data-table{table-layout:auto}.data-table td{font-size:13px;padding:10px 12px}}
+/* CARDS */
+.niche-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:28px 0}
+@media(max-width:768px){.niche-grid{grid-template-columns:1fr}}
+.niche-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;position:relative;overflow:hidden;transition:all 0.3s;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.niche-card:hover{border-color:var(--border-accent);transform:translateY(-2px);box-shadow:0 8px 32px var(--glow)}
+.niche-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient)}
+.niche-card .niche-icon{font-size:28px;margin-bottom:12px}
+.niche-card h4{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:10px}
+.niche-card .pain{font-size:14px;color:var(--text-muted);margin-bottom:10px}
+.niche-card .pitch{font-size:17px;color:var(--text-dim);line-height:1.6}
+.niche-card .pitch strong{color:var(--pink)}
+.callout{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px 36px;margin:28px 0;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.callout::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient)}
+.deliv-list{list-style:none;padding:0;margin:12px 0}
+.deliv-list li{padding:12px 0 12px 28px;position:relative;font-size:17px;line-height:1.65;color:var(--text-dim);border-bottom:1px solid var(--border-light)}
+.deliv-list li:last-child{border-bottom:none}
+.deliv-list li::before{content:'✓';position:absolute;left:0;color:var(--pink);font-weight:700}
+.deliv-list li strong{color:var(--text);font-weight:600}
+/* PRICING */
+.pricing-single{background:var(--bg-card);border:2px solid var(--pink);border-radius:20px;padding:48px 40px;margin:28px 0;position:relative;overflow:hidden;box-shadow:0 16px 48px var(--glow),0 0 80px rgba(255,143,163,0.1);text-align:center}
+.pricing-single::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient)}
+.pricing-single .tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pink);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.pricing-single h4{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:14px}
+.pricing-single .amt{font-family:'DM Serif Display',serif;font-size:64px;line-height:1;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.pricing-single .per{font-size:16px;color:var(--text-muted);margin-bottom:24px}
+/* COMPARE HEADING */
+.compare-heading{font-family:'DM Serif Display',serif;font-size:clamp(32px,4vw,48px);text-align:center;margin-bottom:8px;line-height:1.1}
+.compare-heading em{font-style:italic;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.compare-sub{text-align:center;font-size:18px;color:var(--text-dim);margin-bottom:24px;max-width:680px;margin-left:auto;margin-right:auto}
+/* INVEST VS RETURN */
+.invest-vs{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;margin:28px 0;align-items:stretch}
+@media(max-width:768px){.invest-vs{grid-template-columns:1fr;gap:0}.invest-vs-arrow{transform:rotate(90deg)}}
+.invest-col{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.invest-col.return-col{border-color:var(--pink);box-shadow:0 8px 32px var(--glow),0 0 60px rgba(255,143,163,0.1)}
+.invest-col h4{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:16px;text-align:center}
+.invest-col h4 em{font-style:italic;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.invest-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-dim);line-height:1.5}
+.invest-item:last-child{border-bottom:none}
+.invest-item .ii-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.invest-item strong{color:var(--text)}
+.invest-vs-arrow{display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--pink)}
+/* TIMELINE */
+.timeline{position:relative;padding-left:38px;margin:28px 0}
+.timeline::before{content:'';position:absolute;left:13px;top:8px;bottom:8px;width:2px;background:var(--gradient);opacity:0.35}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-item::before{content:'';position:absolute;left:-31px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--gradient);border:3px solid var(--bg);box-shadow:0 0 16px var(--glow)}
+.tl-week{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pink);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.tl-item h5{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:6px;line-height:1.15}
+.tl-item p{font-size:15px;color:var(--text-dim);line-height:1.6;margin:0}
+/* ROADMAP */
+.roadmap-phase{margin:16px 0;padding:24px 28px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.roadmap-header{display:flex;align-items:flex-start;gap:18px;margin-bottom:12px}
+.roadmap-badge{width:44px;height:44px;border-radius:12px;background:var(--gradient);color:#fff;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.roadmap-period{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pink);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+.roadmap-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1.1}
+.roadmap-goals{list-style:none;padding:0;margin:8px 0}
+.roadmap-goals li{padding:8px 0 8px 24px;position:relative;font-size:15px;line-height:1.55;color:var(--text-dim);border-bottom:1px solid var(--border-light)}
+.roadmap-goals li:last-child{border-bottom:none}
+.roadmap-goals li::before{content:'→';position:absolute;left:0;color:var(--pink);font-weight:700}
+.roadmap-goals li strong{color:var(--text)}
+.roadmap-target{margin-top:12px;display:flex;align-items:center;gap:16px;background:rgba(255,143,163,0.06);border:1px solid var(--border-accent);border-radius:12px;padding:16px 20px}
+.roadmap-target .rt-num{font-family:'DM Serif Display',serif;font-size:40px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;flex-shrink:0}
+.roadmap-target .rt-text{font-size:14px;color:var(--text-dim);line-height:1.5}
+.roadmap-target .rt-text strong{color:var(--text)}
+/* CASE STUDIES */
+.case-full{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;margin:18px 0;overflow:hidden;transition:all 0.3s;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.case-full:hover{border-color:var(--border-accent)}
+.case-header{padding:20px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.case-header h4{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)}
+.case-type{font-size:12px;color:var(--pink);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.case-body{padding:18px 28px;font-size:16px;color:var(--text-dim);line-height:1.7}
+.case-details{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border)}
+@media(max-width:768px){.case-details{grid-template-columns:repeat(2,1fr)}}
+.case-detail-item{padding:14px 18px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.case-detail-item:last-child{border-right:none}
+.cd-label{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.cd-value{font-size:14px;color:var(--text);font-weight:600;line-height:1.4}
+/* PHONE MOCKUP */
+.phone-wrap{margin:24px auto;max-width:340px;perspective:1200px}
+.phone-device{background:linear-gradient(160deg,#E8E4E0 0%,#D8D4D0 100%);border:1px solid rgba(200,196,192,0.4);border-radius:38px;padding:4px;box-shadow:0 30px 80px rgba(212,102,122,0.12),0 8px 24px rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.6);position:relative}
+.phone-notch{width:72px;height:20px;background:#1a1a1a;border-radius:12px;position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:10}
+.phone-notch::after{content:'';width:6px;height:6px;border-radius:50%;background:rgba(30,30,40,0.6);position:absolute;right:14px;top:7px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4)}
+.phone-viewport{border-radius:35px;overflow:hidden;background:#fff;position:relative;border:0.5px solid rgba(0,0,0,0.08)}
+.phone-track{display:flex;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);width:100%}
+.phone-slide{min-width:100%;max-width:100%;flex-shrink:0;overflow:hidden}
+.ps{padding:0 14px;min-height:380px;max-height:420px;display:flex;flex-direction:column;overflow:hidden;background:#fff}
+.ps-status{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text);padding:10px 4px 6px;font-weight:600}
+.ps-header{padding:2px 4px 4px;display:flex;align-items:center;justify-content:space-between}
+.ps-brand{font-family:'DM Serif Display',serif;font-size:16px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ps-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD6DE,#FFB6C1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--pink)}
+.ps-tab{display:flex;justify-content:space-around;padding:8px 0 4px;margin-top:auto;border-top:1px solid var(--border);font-size:9px;color:var(--text-faint)}
+.ps-tab span{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 8px}
+.ps-tab span.on{color:var(--pink);font-weight:700}
+.ps-tab span::before{font-size:14px}
+.ps-home{width:100px;height:4px;border-radius:2px;background:rgba(45,42,62,0.1);margin:4px auto 6px}
+.phone-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:14px}
+.phone-arr{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text-muted);transition:all 0.2s;background:var(--bg-card)}
+.phone-arr:hover{border-color:var(--pink);color:var(--pink)}
+.phone-dots{display:flex;gap:6px}
+.phone-dot{width:8px;height:8px;border-radius:50%;background:rgba(212,102,122,0.15);cursor:pointer;transition:all 0.2s}
+.phone-dot.on{background:var(--pink);box-shadow:0 0 8px var(--glow)}
+.phone-lbl{text-align:center;font-size:12px;color:var(--text-muted);margin-top:8px;font-family:'JetBrains Mono',monospace}
+/* DESKTOP DEMO */
+.demo-frame{background:var(--bg-card);border:1.5px solid rgba(212,102,122,0.18);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(212,102,122,0.06),0 0 40px rgba(255,143,163,0.05);margin:24px 0}
+.demo-browser-bar{display:flex;align-items:center;gap:6px;padding:10px 16px;background:rgba(255,143,163,0.02);border-bottom:1px solid var(--border)}
+.demo-dot{width:10px;height:10px;border-radius:50%}.demo-dot.r{background:#E63946}.demo-dot.y{background:#D4A944}.demo-dot.g{background:#4CAF50}
+.demo-url{margin-left:12px;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;background:rgba(212,102,122,0.04);padding:4px 12px;border-radius:6px;flex:1}
+.demo-screen{padding:20px;min-height:340px}
+.demo-screen.has-sidebar{display:flex;gap:0}
+.ds-sidebar{width:170px;padding:16px 14px;background:rgba(255,143,163,0.02);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--text-muted);flex-shrink:0}
+.ds-sidebar span{padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px}
+.ds-sidebar span.active{background:rgba(255,143,163,0.08);color:var(--pink);font-weight:600}
+.ds-list-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light)}
+.ds-avatar{width:26px;height:26px;border-radius:50%;background:rgba(255,143,163,0.08);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.ds-name{flex:1;font-size:12px;color:var(--text-dim);min-width:0}
+.ds-name strong{color:var(--text)}
+.ds-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:999px;flex-shrink:0}
+.ds-badge.green{background:rgba(76,175,80,0.08);color:#4CAF50}
+.ds-badge.blue{background:rgba(100,149,237,0.08);color:#6495ED}
+.ds-badge.amber{background:rgba(212,169,68,0.08);color:#D4A944}
+.ds-badge.teal{background:rgba(255,143,163,0.08);color:var(--pink)}
+/* FEATURES */
+.feature-block{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;margin:24px 0;overflow:hidden;transition:all 0.3s;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.feature-block:hover{border-color:var(--border-accent)}
+.feature-block-header{padding:24px 28px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border)}
+.feature-block-header .fb-icon{font-size:24px}
+.feature-block-header h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);flex:1}
+.fb-tags{display:flex;gap:6px}
+.fb-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.fb-tag.web{background:rgba(255,143,163,0.08);color:var(--pink)}
+.fb-tag.mobile{background:rgba(76,175,80,0.08);color:#4CAF50}
+.fb-tag.admin{background:rgba(212,169,68,0.08);color:var(--gold)}
+.feature-block .deliv-list{padding:8px 28px 24px}
+.feature-block .deliv-list li{font-size:16px;padding:10px 0 10px 24px}
+/* BENEFITS GRID */
+.benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
+@media(max-width:768px){.benefits-grid{grid-template-columns:1fr}}
+.benefit-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:22px 18px;transition:all 0.3s;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(212,102,122,0.03)}
+.benefit-card:hover{border-color:var(--border-accent);transform:translateY(-2px);box-shadow:0 8px 32px var(--glow)}
+.benefit-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient)}
+.benefit-card .b-icon{font-size:24px;margin-bottom:10px}
+.benefit-card h4{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:8px;line-height:1.1}
+.benefit-card p{font-size:14px;color:var(--text-dim);line-height:1.55}
+/* HIPAA */
+.hipaa-block{background:var(--bg-deep);border:1px solid var(--border-accent);border-radius:16px;padding:32px 36px;margin:28px 0;position:relative;overflow:hidden}
+.hipaa-block::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient)}
+.hipaa-items{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+@media(max-width:768px){.hipaa-items{grid-template-columns:1fr}}
+.hipaa-item{display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--bg-card);border-radius:10px;border:1px solid var(--border)}
+.hipaa-item .hi-icon{width:32px;height:32px;border-radius:8px;background:rgba(255,143,163,0.08);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700}
+.hipaa-item .hi-text{font-size:14px;color:var(--text-dim);line-height:1.5}
+.hipaa-item .hi-text strong{color:var(--text)}
+/* NAME OPTIONS */
+.name-options{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
+@media(max-width:768px){.name-options{grid-template-columns:1fr}}
+.name-option{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;text-align:center;transition:all 0.3s}
+.name-option:hover{border-color:var(--border-accent);transform:translateY(-2px)}
+.name-option.featured{border-color:var(--pink);box-shadow:0 8px 32px var(--glow),0 0 60px rgba(255,143,163,0.08)}
+.name-option .app-name{font-family:'DM Serif Display',serif;font-size:30px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.name-option .app-sub{font-size:13px;color:var(--text-muted);line-height:1.5}
+/* FORM */
+form{max-width:560px;margin:40px auto;padding:36px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 24px rgba(212,102,122,0.04)}
+.form-row{margin-bottom:18px}
+.form-row label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--pink);text-transform:uppercase;margin-bottom:6px}
+.form-row input,.form-row textarea,.form-row select{width:100%;padding:12px 16px;border-radius:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-size:15px;font-family:'DM Sans',sans-serif;transition:border-color 0.2s;box-sizing:border-box}
+.form-row input:focus,.form-row textarea:focus,.form-row select:focus{outline:none;border-color:var(--pink)}
+.form-row textarea{min-height:120px;resize:vertical}
+.form-row select{cursor:pointer;appearance:none}
+.form-row select option{background:var(--bg-card);color:var(--text)}
+.form-submit{width:100%;padding:16px;border:none;border-radius:10px;background:var(--gradient);color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;box-shadow:0 6px 20px rgba(232,98,124,0.25)}
+.form-submit:hover{transform:translateY(-1px);box-shadow:0 8px 24px var(--glow-strong)}
+footer{padding:48px 0;border-top:1px solid var(--border);text-align:center;font-size:14px;color:var(--text-muted)}
+footer strong{color:var(--text-dim)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+.reveal.revealed{opacity:1;transform:none}
+@media(max-width:640px){section{padding:50px 0}.container{padding:0 20px}.hero-inner{padding:80px 0 60px}.letter,.callout,.hipaa-block{padding:28px 22px}.niche-grid,.name-options,.benefits-grid,.hipaa-items{grid-template-columns:1fr}.invest-vs{grid-template-columns:1fr}}
+
+
+/* ── ACCESS GATE LOCK ── */
+html.proposal-locked, body.proposal-locked{height:100%;overflow:hidden!important}
+body.proposal-locked .topbar,
+body.proposal-locked section,
+body.proposal-locked .divider-spacer,
+body.proposal-locked footer,
+body.proposal-locked #audio-player{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.gate-backdrop{position:fixed;inset:0;z-index:2147483600;background:rgba(255,247,245,0.96);opacity:1;pointer-events:auto;backdrop-filter:blur(10px)}
+.gate-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2147483601;background:var(--bg-card);border:1px solid var(--border-accent);border-radius:24px;padding:38px 36px;text-align:center;max-width:540px;width:92%;box-shadow:0 40px 110px rgba(212,102,122,0.22),0 0 80px rgba(255,143,163,0.12);display:none;overflow:hidden}
+.gate-popup.show{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+.gate-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient)}
+.gate-popup .gate-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pink);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.gate-popup h3{font-family:'DM Serif Display',serif;font-size:34px;line-height:1.08;margin-bottom:12px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gate-popup p{font-size:14px;color:var(--text-dim);line-height:1.65;margin-bottom:18px}
+.gate-note{background:rgba(255,143,163,0.06);border:1px solid var(--border-accent);border-radius:14px;padding:16px 18px;margin:18px 0 20px;text-align:left}
+.gate-note-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--pink);margin-bottom:6px}
+#gate-form{max-width:none;margin:0;padding:0;background:transparent;border:none;border-radius:0;box-shadow:none;text-align:left}
+.gate-field{margin-bottom:12px}
+.gate-field label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--pink);text-transform:uppercase;display:block;margin-bottom:4px}
+.gate-field input{width:100%;padding:11px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;box-sizing:border-box;transition:border-color 0.2s,box-shadow 0.2s}
+.gate-field input:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,143,163,0.10)}
+.gate-check{display:flex;align-items:flex-start;gap:9px;margin:14px 0 16px}
+.gate-check input{margin-top:3px;accent-color:var(--pink)}
+.gate-check label{font-size:12px;color:var(--text-dim);line-height:1.5;cursor:pointer}
+.gate-btn{width:100%;padding:15px;border:none;border-radius:12px;background:var(--gradient);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.4px;transition:all 0.2s;box-shadow:0 8px 24px rgba(232,98,124,0.25)}
+.gate-btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px var(--glow-strong)}
+.gate-btn:disabled{opacity:0.7;cursor:wait;transform:none}
+.gate-message{font-size:12px;color:var(--gold);line-height:1.45;margin:10px 0 0;text-align:center;display:none}
+.gate-message.show{display:block}
+.gate-return-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.gate-secondary{width:100%;padding:13px;border-radius:12px;background:transparent;color:var(--pink);border:1px solid var(--pink);font-size:14px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.gate-secondary:hover{background:rgba(255,143,163,0.06)}
+body:not(.proposal-locked) .gate-backdrop,
+body:not(.proposal-locked) .gate-popup{display:none!important;visibility:hidden!important;pointer-events:none!important}
+@media(max-width:560px){.gate-popup{padding:30px 22px}.gate-popup h3{font-size:28px}}
+
+</style>
+</head>
+<body class="proposal-locked">
+<div class="gate-backdrop" id="gateBackdrop"></div>
+<div class="gate-popup show" id="gatePopup">
+  <div class="gate-sub">Mobile App Development Proposal</div>
+  <h3>Welcome, Dr. Hervey</h3>
+  <p>This private proposal covers the Baby Catcher mobile app strategy, platform vision, HIPAA-ready architecture, timeline, revenue model, and investment.</p>
+  <div class="gate-note">
+    <div class="gate-note-title">🤝 A Note on This Proposal</div>
+    <p style="font-size:12px;line-height:1.6;margin:0">Every proposal we prepare is custom-built around the client’s vision, business model, and growth opportunity. Because this strategy is tailored specifically for Team Baby Catcher, we kindly ask that this document remain confidential and not be shared with third parties without approval from Kinetic Digital Publishers.</p>
+  </div>
+  <form id="gate-form" action="https://api.web3forms.com/submit" method="POST" onsubmit="event.preventDefault(); submitGateAndStart();">
+    <input type="hidden" name="access_key" value="76aac073-a971-494e-8e91-2c9d276ce80a">
+    <input type="hidden" name="subject" value="Baby Catcher Proposal Accessed by Dr. Hervey">
+    <input type="hidden" name="_subject" value="Baby Catcher Proposal Accessed by Dr. Hervey">
+    <input type="hidden" name="to" value="teamkineticemail@gmail.com">
+    <input type="hidden" name="recipient_requested" value="teamkineticemail@gmail.com">
+    <input type="hidden" name="from_name" value="Proposal Gate - Baby Catcher">
+    <input type="hidden" name="proposal" value="Baby Catcher — Mobile App Development Proposal">
+    <div class="gate-field"><label>Your Name</label><input type="text" name="name" required placeholder="Dr. Michael J. Hervey II"></div>
+    <div class="gate-field"><label>Email</label><input type="email" name="email" required placeholder="your@email.com"></div>
+    <div class="gate-field"><label>Phone</label><input type="tel" name="phone" required placeholder="(555) 123-4567"></div>
+    <div class="gate-check"><input type="checkbox" id="acceptGateTerms" name="confidentiality_acknowledged" value="Yes" required><label for="acceptGateTerms">I acknowledge this proposal is confidential and agree not to share it with third parties without prior approval from Kinetic Digital Publishers.</label></div>
+    <button type="submit" id="gateSubmitBtn" class="gate-btn">▶ Accept & Begin Walkthrough</button>
+    <div id="gateMessage" class="gate-message"></div>
+  </form>
+</div>
+<div class="gate-popup" id="resumePopup">
+  <div class="gate-sub">Welcome Back</div>
+  <h3>Good To See You Again</h3>
+  <p>You were reviewing the Baby Catcher mobile app proposal. Would you like to pick up where you left off, or start fresh from the beginning?</p>
+  <div class="gate-return-actions">
+    <button onclick="resumeProposal()" class="gate-btn">↻ Resume Where I Left Off</button>
+    <button onclick="startFresh()" class="gate-secondary">▶ Start From The Beginning</button>
+  </div>
+</div>
+
+<div class="topbar"><div class="topbar-inner"><div class="brand">Kinetic <em>×</em> Team Baby Catcher</div><div class="nav"><a href="#problem">Problem</a><a href="#market">Market</a><a href="#features">Features</a><a href="#investment">Investment</a></div></div></div>
+<div id="audio-player"><div class="ap-mini" onclick="toggleMinimize()">▶</div><div class="ap-full"><div class="ap-header"><div class="ap-icon">▶</div><div class="ap-title"><h4>Baby Catcher App — Proposal Walkthrough</h4><p>Narrated by Sam · Kinetic Digital Publishers</p></div><button class="ap-minimize" onclick="toggleMinimize()" title="Minimize">−</button></div><div class="ap-controls"><button class="ap-play-btn" onclick="togglePlay()"><svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg id="pauseIcon" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button><div class="ap-progress-wrap"><div class="ap-progress-bar" id="apProgressBar" onclick="seekAudio(event)"><div class="ap-progress-fill" id="apProgressFill"></div></div><div class="ap-time"><span id="apCurrentTime">0:00</span><span id="apDuration">0:00</span></div></div></div><button class="ap-chapters-toggle" onclick="toggleChapters()"><span id="chToggleText">▾ Show All Sections</span></button><div class="ap-chapters" id="apChapters"><div class="ap-chapters-list" id="chaptersList"></div></div></div></div>
+<audio id="narrationAudio" preload="auto">
+  <source src="walkthrough.mp3" type="audio/mpeg">
+  <source src="./walkthrough.mp3" type="audio/mpeg">
+</audio>
+
+<section class="hero" id="hero"><div class="hero-bg"><div class="hero-grid"></div></div><div class="hero-inner"><div class="container">
+<div class="hero-tag"><span class="dot"></span> Confidential · Prepared for Dr. Michael J. Hervey II</div>
+<h1>4,000 Patients.<br>100+ Deliveries Monthly.<br><em>One App Away From Owning That Audience.</em></h1>
+<p class="hero-sub">A complete mobile app proposal. Turning the philosophy behind <strong>Her Body, Her Baby</strong> and <strong>Empowering Birth</strong> into a HIPAA-compliant pregnancy companion that builds your own community, your own patient database, and a recurring revenue stream independent of insurance.</p>
+<div class="hero-meta"><div class="hero-meta-item"><span class="label">Prepared By</span><span class="value">Sam- <em>Sr. Strategist</em></span></div><div class="hero-meta-item"><span class="label">Agency</span><span class="value">Kinetic Digital Publishers</span></div><div class="hero-meta-item"><span class="label">Engagement</span><span class="value">Mobile App Development</span></div><div class="hero-meta-item"><span class="label">Date</span><span class="value">May 2026</span></div></div>
+</div></div></section>
+<div class="divider-spacer"></div>
+
+<section id="intro"><div class="container">
+<div class="reveal"><div class="section-label">01 · Introduction</div><h2 class="section-title">Let's Be <em>Direct</em></h2></div>
+<div class="letter reveal">
+<p>Dr. Hervey, you're not a doctor with a side project. You're a <strong>CEO running a 12-person clinical team</strong> that manages care for nearly 4,000 women and delivers over 100 babies every month. You've built Premier OB/GYN from the ground up with Ellie. You've launched the Premier Wellness Initiative. You're an <em>Assistant Clinical Professor</em> at the University of Arizona College of Medicine. You've published two books. And your brand, <em>Team Baby Catcher</em>, already has the recognition and the patient volume that most practices spend years trying to build.</p>
+<p>The problem is that right now, all of that influence, all of that patient trust, and all of that content lives inside your clinic walls and your book covers. <strong>Every mother who walks through your doors eventually walks out, and you have no digital platform to stay connected to her.</strong> No community she can belong to. No daily touchpoint beyond her next appointment. No way to extend Team Baby Catcher's philosophy into the 39 weeks between visits.</p>
+<p>What we're proposing isn't just an app. <strong>It's a platform that turns your existing patient base into a community you own</strong>, with your content, your philosophy, your brand, and a database that grows with every download. A physician-built pregnancy companion backed by published books and two decades of clinical practice. Nothing like it exists.</p>
+<div class="signature"><div class="name">SAM</div><div class="role">Sam- Sr. Strategist<br>Kinetic Digital Publishers</div></div>
+</div></div></section>
+<div class="divider-spacer"></div>
+
+<section id="books"><div class="container">
+<div class="reveal"><div class="section-label">02 · Published Authority</div><h2 class="section-title">Two Books. <em>Five-Star Reviews. Content That's Ready.</em></h2><p class="section-lead">Most app founders start with nothing. You start with two published books, real clinical authority, and a reader base that already trusts your voice.</p></div>
+<div class="niche-grid reveal">
+<div class="niche-card" style="border-color:var(--pink);box-shadow:0 8px 32px var(--glow)"><div style="display:flex;gap:16px;margin-bottom:14px"><div style="width:56px;height:72px;border-radius:6px;background:linear-gradient(135deg,rgba(255,143,163,0.15),rgba(232,98,124,0.1));border:1px solid var(--border-accent);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">📖</div><div><h4 style="margin-bottom:4px">Her Body, Her Baby</h4><div style="font-size:12px;color:var(--text-muted)">Real Stories of Autonomy in Child-birth</div></div></div>
+<div style="display:flex;gap:10px;margin-bottom:12px"><div style="background:rgba(240,192,96,0.1);border:1px solid rgba(240,192,96,0.2);border-radius:8px;padding:6px 12px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--pink)">★ 5.0</div><div style="font-size:9px;color:var(--text-muted)">Amazon Rating</div></div><div style="background:rgba(255,143,163,0.08);border:1px solid rgba(255,143,163,0.15);border-radius:8px;padding:6px 12px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">80</div><div style="font-size:9px;color:var(--text-muted)">Reviews</div></div><div style="background:rgba(255,143,163,0.08);border:1px solid rgba(255,143,163,0.15);border-radius:8px;padding:6px 12px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$9.99</div><div style="font-size:9px;color:var(--text-muted)">Kindle</div></div></div>
+<div class="pitch">The content backbone of the app. Real birth stories from real mothers, each one demonstrating the autonomy-first philosophy that defines your practice. <strong>These stories become the app's premium Birth Stories library.</strong></div></div>
+
+<div class="niche-card"><div style="display:flex;gap:16px;margin-bottom:14px"><div style="width:56px;height:72px;border-radius:6px;background:linear-gradient(135deg,rgba(232,98,124,0.15),rgba(255,143,163,0.1));border:1px solid var(--border-accent);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">📘</div><div><h4 style="margin-bottom:4px">Empowering Birth</h4><div style="font-size:12px;color:var(--text-muted)">The Role of Midwifery and Physician Collaboration</div></div></div>
+<div style="display:flex;gap:10px;margin-bottom:12px"><div style="background:rgba(240,192,96,0.1);border:1px solid rgba(240,192,96,0.2);border-radius:8px;padding:6px 12px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--pink)">★ 5.0</div><div style="font-size:9px;color:var(--text-muted)">Amazon Rating</div></div><div style="background:rgba(255,143,163,0.08);border:1px solid rgba(255,143,163,0.15);border-radius:8px;padding:6px 12px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">3</div><div style="font-size:9px;color:var(--text-muted)">Reviews</div></div><div style="background:rgba(255,143,163,0.08);border:1px solid rgba(255,143,163,0.15);border-radius:8px;padding:6px 12px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$6.99</div><div style="font-size:9px;color:var(--text-muted)">Kindle</div></div></div>
+<div class="pitch">The clinical and philosophical framework. Evidence-based collaborative care between OB/GYNs and midwives. <strong>This becomes the app's educational content, birth plan logic, and weekly guidance engine.</strong></div></div>
+</div>
+
+<div class="callout reveal"><div class="section-body">
+<h3>Books to App: The Content Pipeline</h3>
+<p>Every piece of content in the app traces back to your published work. <strong>Her Body, Her Baby</strong> provides the birth stories library, the patient narrative voice, and the autonomy-first prompts in the birth plan builder. <strong>Empowering Birth</strong> provides the clinical frameworks, the weekly educational content, and the collaborative care philosophy that differentiates this app from every competitor in the market. You're not starting from zero. You're starting from two published, five-star-rated books with 83 reviews and a readership that already trusts your voice.</p>
+</div></div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="bigidea"><div class="container">
+<div class="reveal"><div class="section-label">03 · The Big Idea</div><h2 class="section-title">Build Your Own Community. <em>Own Your Audience.</em></h2><p class="section-lead">Right now, your patients exist inside Athena Health's portal, on insurance company databases, and on social media platforms you don't control. This app changes that.</p></div>
+<div class="benefits-grid reveal">
+<div class="benefit-card"><div class="b-icon">📱</div><h4>Your Platform, Your Data</h4><p>Every download is a user in your database. Not Athena's, not Facebook's, not insurance companies'. You own the patient relationship beyond the clinic.</p></div>
+<div class="benefit-card"><div class="b-icon">🔄</div><h4>Revenue Beyond Insurance</h4><p>Premium subscriptions create recurring revenue that doesn't depend on insurance reimbursements, copays, or claims. Diversified income from content you've already created.</p></div>
+<div class="benefit-card"><div class="b-icon">👥</div><h4>Community, Not Just Patients</h4><p>Transform one-time patients into long-term community members. Mothers stay connected through pregnancy, postpartum, and beyond.</p></div>
+<div class="benefit-card"><div class="b-icon">📊</div><h4>Direct Communication</h4><p>Push notifications, content updates, and wellness programs delivered directly. No algorithm filtering, no ad spend. Your message reaches your audience every time.</p></div>
+<div class="benefit-card"><div class="b-icon">🌍</div><h4>Scale Beyond Phoenix</h4><p>Your books already reach readers nationwide. The app extends Team Baby Catcher's philosophy to mothers everywhere, not just those who can walk into your clinic.</p></div>
+<div class="benefit-card"><div class="b-icon">📈</div><h4>Data-Driven Growth</h4><p>Real analytics on what content mothers engage with, when they're most active, what features they use. Insights that improve both the app and your practice.</p></div>
+</div>
+<div class="callout reveal"><div class="section-body">
+<h3>The Flywheel Effect</h3>
+<p><strong>Your existing 4,000 patients are the launch audience.</strong> Each patient who downloads the app becomes a community member. Each community member shares it with friends, family, and other expectant mothers. Each new user discovers Dr. Hervey's books, philosophy, and practice. <em>The app feeds the practice. The practice feeds the app. The books feed both.</em> Right now, you're leaving this compounding growth on the table because you don't have a platform to capture it.</p>
+</div></div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="benefits"><div class="container">
+<div class="reveal"><div class="section-label">04 · Why This Works For You</div><h2 class="section-title">Built On <em>Your Books. Powered By Your Experience.</em></h2><p class="section-lead">This isn't an app built from scratch. It's built on 20+ years of clinical practice, two published books, and a philosophy that already resonates with thousands of patients.</p></div>
+<div class="niche-grid reveal">
+<div class="niche-card"><div class="niche-icon">📖</div><h4>Content That Already Exists</h4><div class="pitch">Your two books, <strong>Her Body, Her Baby</strong> and <strong>Empowering Birth</strong>, contain the entire content foundation for the app. Real patient stories. Collaborative care frameworks. Evidence-based guidance. We adapt what you've already written and published.</div></div>
+<div class="niche-card"><div class="niche-icon">🏥</div><h4>A Practice That Validates Everything</h4><div class="pitch">You're not a tech founder guessing at what mothers need. You're a <strong>practicing OB/GYN who delivers 100+ babies monthly</strong> and manages care for nearly 4,000 women. The app is an extension of a clinical practice that already exists.</div></div>
+<div class="niche-card"><div class="niche-icon">👥</div><h4>A Team That's Already Built</h4><div class="pitch">Your 12-person clinical team, 2 OB/GYNs, 7 CNMs, and 3 NPs, represents the collaborative care model your books advocate. The app showcases a <strong>real team delivering real care</strong>, not anonymous content.</div></div>
+<div class="niche-card"><div class="niche-icon">🎓</div><h4>Academic Credibility</h4><div class="pitch">As an <strong>Assistant Clinical Professor at the University of Arizona College of Medicine</strong>, you carry academic weight no app competitor can match. Harvard Master's. UVA Medical School. Continental Who's Who recognition.</div></div>
+</div>
+<div class="callout reveal"><div class="section-body">
+<h3>The Personal Connection</h3>
+<p>As someone who is a <strong>product of a teenage pregnancy</strong>, your connection to maternal care isn't abstract. It's deeply personal. That authenticity is something no competitor can replicate. It shows up in your books, your clinical approach, and now, in an app that carries that same empathy and lived understanding into the hands of every mother who downloads it.</p>
+</div></div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="problem"><div class="container">
+<div class="reveal"><div class="section-label">05 · The Problem</div><h2 class="section-title">140 Million Births. <em>Zero Physician-Led Apps.</em></h2><p class="section-lead">Expectant mothers are overwhelmed by generic content from faceless editorial teams, and none of the top pregnancy apps are built by a practicing OB/GYN with published books.</p></div>
+<div class="stat-grid reveal">
+<div class="stat-card"><div class="num">50+</div><div class="lbl">Pregnancy apps in the App Store. Not one authored by a practicing OB/GYN with published books on birth autonomy and collaborative midwifery care</div></div>
+<div class="stat-card"><div class="num">73%</div><div class="lbl">Of expectant mothers use at least one pregnancy app but report feeling overwhelmed by conflicting, impersonal information from anonymous sources</div></div>
+<div class="stat-card" style="border-color:var(--pink);box-shadow:0 4px 16px var(--glow)"><div class="num" style="font-size:36px">ONE GAP</div><div class="lbl">A physician-authored pregnancy companion that centers the mother's autonomy and delivers content from a doctor she can name and trust: <strong style="color:var(--pink)">your app fills it</strong></div></div>
+</div>
+<div class="callout reveal"><div class="section-body"><h3>The Competitive Landscape</h3></div>
+<div class="data-table-wrap"><table class="data-table"><thead><tr><th style="width:18%">App</th><th style="width:22%">Founded By</th><th style="width:16%">Model</th><th style="width:44%">What It Doesn't Have</th></tr></thead><tbody>
+<tr><td class="co-name">Flo Health</td><td>Software engineers (Belarus)</td><td class="num">Freemium</td><td>No physician author. Generic editorial content. No birth philosophy.</td></tr>
+<tr><td class="co-name">What to Expect</td><td>Media/publishing company</td><td class="num">Ad-supported</td><td>No named physician voice. Content-by-committee. No autonomy framework.</td></tr>
+<tr><td class="co-name">Ovia Health</td><td>Tech startup (acq. by Labcorp)</td><td class="num">Employer-sponsored</td><td>B2B model, not direct to mothers. No published author.</td></tr>
+<tr><td class="co-name">BabyCenter</td><td>Everyday Health Group</td><td class="num">Ad-supported</td><td>Massive ad load. No physician brand. No empowerment philosophy.</td></tr>
+<tr><td class="co-name">The Bump</td><td>The Knot/XO Group</td><td class="num">Ad-supported</td><td>Lifestyle-first, clinical-second. No practicing OB/GYN behind it.</td></tr>
+</tbody></table></div></div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="market"><div class="container">
+<div class="reveal"><div class="section-label">06 · Market Research</div><h2 class="section-title">The Market Is <em>Massive</em></h2></div>
+<div class="stat-grid reveal">
+<div class="stat-card"><div class="num">$710M</div><div class="lbl">Pregnancy tracking and postpartum care app market size in 2026, growing at 12.5% annually</div><div class="src">Mordor Intelligence, 2026</div></div>
+<div class="stat-card"><div class="num">$1.27B</div><div class="lbl">Projected market size by 2031, growing faster than most consumer health segments</div><div class="src">Mordor Intelligence, 2026</div></div>
+<div class="stat-card"><div class="num">140M</div><div class="lbl">Babies born worldwide each year. Every one represents a mother who could benefit from physician-authored guidance</div><div class="src">WHO Global Estimates</div></div>
+</div>
+<div class="niche-grid reveal">
+<div class="niche-card"><div class="niche-icon">🎯</div><h4>Your Unfair Advantage</h4><div class="pitch">You're not a tech founder trying to learn healthcare. You're a <strong>20-year practicing OB/GYN who's already done the hardest part</strong>: developing, practicing, and publishing a philosophy. The app just gives it a screen.</div></div>
+<div class="niche-card"><div class="niche-icon">🏗️</div><h4>Built-In Launch Audience</h4><div class="pitch">With <strong>4,000 active patients</strong>, social media across Facebook, Instagram, TikTok, YouTube, and X, plus books on Amazon, you already have the distribution channel most app founders spend years building.</div></div>
+</div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="naming"><div class="container">
+<div class="reveal"><div class="section-label">07 · The Name</div><h2 class="section-title">Three Directions. <em>Your Call.</em></h2><p class="section-lead">The name should extend your existing brand, not compete with it.</p></div>
+<div class="name-options reveal">
+<div class="name-option featured"><div class="app-name">Baby Catcher</div><div class="app-sub">Directly extends <em>Team Baby Catcher</em>, your practice brand. Patients already know the name. Warm, memorable, and immediately recognizable. Zero brand awareness work needed.</div></div>
+<div class="name-option"><div class="app-name">HerBirth</div><div class="app-sub">Echoes <em>Her Body, Her Baby</em>. Two words. Ownership-first. The name says the birth belongs to her.</div></div>
+<div class="name-option"><div class="app-name">EmpowerBirth</div><div class="app-sub">Extends <em>Empowering Birth</em>. Speaks to collaborative care and evidence-based confidence. Strong and actionable.</div></div>
+</div>
+<div class="section-body reveal"><p>Throughout this proposal, we use <em>Baby Catcher</em> as the working name. It's already your brand, your URL, your email handle, and your patients' way of referring to your practice.</p></div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="hipaa"><div class="container">
+<div class="reveal"><div class="section-label">08 · HIPAA Compliance</div><h2 class="section-title">Healthcare-Grade <em>Security. From Day One.</em></h2><p class="section-lead">A pregnancy app built by an OB/GYN must meet the same compliance standards as the practice itself. Every feature is designed with HIPAA at the foundation, not bolted on after launch.</p></div>
+<div class="hipaa-block reveal">
+<div class="section-body"><h3>Built-In Compliance Architecture</h3></div>
+<div class="hipaa-items">
+<div class="hipaa-item"><div class="hi-icon">🔐</div><div class="hi-text"><strong>End-to-End Encryption</strong> All data encrypted in transit (TLS 1.3) and at rest (AES-256). Symptom logs, health trackers, and personal information never stored in plaintext.</div></div>
+<div class="hipaa-item"><div class="hi-icon">🛡️</div><div class="hi-text"><strong>BAA-Ready Infrastructure</strong> Hosting on HIPAA-eligible cloud services (AWS/GCP) with Business Associate Agreements in place. Audit-ready from day one.</div></div>
+<div class="hipaa-item"><div class="hi-icon">🔑</div><div class="hi-text"><strong>Access Controls & Authentication</strong> Role-based access, multi-factor authentication, and session management. Only the patient sees her data. Admin access is logged and auditable.</div></div>
+<div class="hipaa-item"><div class="hi-icon">📋</div><div class="hi-text"><strong>Audit Logging</strong> Every access to Protected Health Information (PHI) is logged with timestamps, user IDs, and action types. Complete audit trail for compliance reviews.</div></div>
+<div class="hipaa-item"><div class="hi-icon">🗑️</div><div class="hi-text"><strong>Data Retention & Deletion</strong> Users can request data export or deletion at any time. Retention policies are transparent, documented, and compliant with federal requirements.</div></div>
+<div class="hipaa-item"><div class="hi-icon">📱</div><div class="hi-text"><strong>Secure Mobile Architecture</strong> No PHI stored locally on device. Session timeouts, biometric lock, and secure API communication. App Store privacy disclosures and consent flows built in.</div></div>
+</div></div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="revenue"><div class="container">
+<div class="reveal"><div class="section-label">09 · Revenue Model</div><h2 class="section-title">Free To Start. <em>Premium To Unlock.</em></h2><p class="section-lead">Freemium is the dominant model in pregnancy apps. It eliminates the download barrier, builds trust, and converts engaged mothers into paying subscribers.</p></div>
+<div class="niche-grid reveal">
+<div class="niche-card"><div class="niche-icon">🆓</div><h4>Free Tier — Baby Catcher Basic</h4><div class="pain">Available to every mother, no payment required</div><div class="pitch">Week-by-week pregnancy tracker. Kick counter and contraction timer. Due date calculator. Weekly tips from Dr. Hervey. Community access. Push notifications. <strong>This tier drives downloads, builds trust, and creates the funnel.</strong></div></div>
+<div class="niche-card" style="border-color:var(--pink);box-shadow:0 8px 32px var(--glow)"><div class="niche-icon">👑</div><h4>Premium — Baby Catcher+</h4><div class="pain">$6.99/month or $49.99/year</div><div class="pitch">Full book-based content library. Birth plan builder. Real birth stories from <em>Her Body, Her Baby</em>. Postpartum module. Personalized journal. Ad-free. <strong>This is where your content becomes recurring revenue.</strong></div></div>
+</div>
+
+<div class="reveal" style="margin-top:32px">
+<div class="compare-heading">Books vs. App: <em>The Revenue Shift</em></div>
+<div class="compare-sub">You already sell books. Here's what happens when you add an app to the same audience.</div>
+<div class="invest-vs">
+<div class="invest-col">
+<h4>📖 Books <em>Today</em></h4>
+<div class="invest-item"><span class="ii-icon">📕</span><div><strong>400 Book Sales</strong> At ~$20 per copy across Amazon Kindle and paperback</div></div>
+<div class="invest-item"><span class="ii-icon">💵</span><div><strong>= $8,000 Gross Revenue</strong> That's the total before Amazon takes their cut</div></div>
+<div class="invest-item"><span class="ii-icon">✂️</span><div><strong>Amazon Keeps 30-65%</strong> Depending on format, you take home roughly $2,800 to $5,600 from that $8,000</div></div>
+<div class="invest-item"><span class="ii-icon">🔄</span><div><strong>One-Time Purchase</strong> Each reader buys once. No recurring relationship. No ongoing revenue. No second transaction.</div></div>
+<div class="invest-item"><span class="ii-icon">📉</span><div><strong>No Data, No Connection</strong> You don't know who bought it, what they read, or how to reach them again</div></div>
+<div style="margin-top:12px;padding:14px;background:rgba(230,57,70,0.04);border:1px solid rgba(230,57,70,0.12);border-radius:10px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--red)">$8,000</div><div style="font-size:12px;color:var(--text-muted)">Gross revenue · One-time · Amazon takes 30-65%</div></div>
+</div>
+<div class="invest-vs-arrow">→</div>
+<div class="invest-col return-col">
+<h4>📱 App <em>Changes Everything</em></h4>
+<div class="invest-item"><span class="ii-icon">👥</span><div><strong>4,000 Patients = Launch Base</strong> Your existing patients download the app on day one. Built-in audience, zero acquisition cost.</div></div>
+<div class="invest-item"><span class="ii-icon">📊</span><div><strong>10% Go Premium = 400 Subscribers</strong> Conservative conversion from your own patient base alone</div></div>
+<div class="invest-item"><span class="ii-icon">💰</span><div><strong>400 × ~$100 / 18 months = $40,000</strong> Each subscriber pays $6.99/mo or $49.99/yr across pregnancy and postpartum</div></div>
+<div class="invest-item"><span class="ii-icon">🔄</span><div><strong>Recurring, Compounding Revenue</strong> Every new patient cycle adds subscribers. Every shared download grows the base. Revenue compounds month over month.</div></div>
+<div class="invest-item"><span class="ii-icon">📈</span><div><strong>Scale: 4,000 Premium = $400,000+</strong> As the app grows beyond your patient base into national downloads, the math multiplies.</div></div>
+<div class="invest-item"><span class="ii-icon">🏦</span><div><strong>You Keep 70-85%</strong> App Store takes 15-30%. No printing, no shipping, no inventory. Digital margins.</div></div>
+<div style="margin-top:12px;padding:14px;background:rgba(255,143,163,0.08);border:1px solid rgba(255,143,163,0.15);border-radius:10px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:32px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$40,000 to $400,000+</div><div style="font-size:12px;color:var(--text-muted)">Recurring annually · Growing with every download</div></div>
+</div>
+</div>
+<div style="margin-top:20px;padding:18px 24px;background:rgba(255,143,163,0.06);border:1px solid rgba(255,143,163,0.12);border-radius:12px">
+<div class="section-body"><p style="margin:0"><strong style="color:var(--pink)">The app pays for itself.</strong> At just 400 premium subscribers (10% of your existing patient base), the app generates $40,000 in its first cycle. That's 2x the $20,000 investment. By year two, the development cost is covered and everything after that is margin. <em>You're not spending $20,000. You're investing it into a revenue engine that returns it within months and keeps compounding.</em></p></div>
+</div>
+</div>
+
+<div class="callout reveal"><div class="section-body"><h3>Illustrative Revenue at Scale</h3></div>
+<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Downloads</th><th>Premium (5%)</th><th>Monthly</th><th>Annual</th><th>At $49.99/yr</th></tr></thead><tbody>
+<tr><td class="co-name">10,000</td><td class="num">500</td><td class="num">$3,495</td><td class="num">$41,940</td><td class="num">$24,995</td></tr>
+<tr><td class="co-name">25,000</td><td class="num">1,250</td><td class="num">$8,738</td><td class="num">$104,850</td><td class="num">$62,488</td></tr>
+<tr><td class="co-name">50,000</td><td class="num">2,500</td><td class="num">$17,475</td><td class="num">$209,700</td><td class="num">$124,975</td></tr>
+</tbody></table></div>
+<div class="section-body"><p><em>These projections are illustrative and assume steady-state conversion at industry-standard rates (3-7% for health apps). Actual results depend on marketing, organic growth, ASO, and content quality.</em></p></div>
+</div></div></section>
+<div class="divider-spacer"></div>
+<section id="features"><div class="container">
+<div class="reveal"><div class="section-label">10 · Core Features</div><h2 class="section-title">What Mothers <em>Get</em></h2><p class="section-lead">Every feature is designed around your published philosophy: the mother leads, the physician guides, the app supports.</p></div>
+
+<!-- PINK CONCEPT CSS (scoped) -->
+<style>
+.app-demo{margin:0 auto;width:300px;position:relative}
+.app-demo .ph-body{background:linear-gradient(160deg,#E8E4E0 0%,#D8D4D0 100%);border-radius:38px;padding:4px;box-shadow:0 30px 80px rgba(212,102,122,0.15),0 8px 24px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(200,196,192,0.4);position:relative}
+.app-demo .ph-body::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:72px;height:20px;background:#1a1a1a;border-radius:12px;z-index:10}
+.app-demo .ph-body::after{content:'';position:absolute;top:18px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:rgba(30,30,40,0.6);z-index:11;margin-left:24px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4)}
+.app-demo .scr{border-radius:35px;overflow:hidden;background:#fff;position:relative;border:0.5px solid rgba(0,0,0,0.08)}
+.app-demo .scr-inner{min-height:370px;display:flex;flex-direction:column}
+.app-demo .sb{display:flex;justify-content:space-between;align-items:center;padding:8px 18px 4px;font-size:11px;font-weight:600;color:#2D2A3E}
+.app-demo .ah{padding:2px 18px 4px;display:flex;align-items:center;justify-content:space-between}
+.app-demo .al{font-family:'DM Serif Display',serif;font-size:16px;background:linear-gradient(135deg,#FF8FA3,#E8627C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.app-demo .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD6DE,#FFB6C1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#D4667A}
+.app-demo .hc{margin:4px 14px;padding:14px 12px;background:linear-gradient(135deg,#FFF0F3 0%,#FFE4EA 50%,#FFD6DE 100%);border-radius:20px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,182,193,0.2)}
+.app-demo .hc::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.4)}
+.app-demo .hc .wk{font-family:'DM Serif Display',serif;font-size:24px;color:#2D2A3E;line-height:1}
+.app-demo .hc .tr{font-size:10px;color:#D4667A;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.app-demo .hc .em{font-size:32px;margin:6px 0 2px}
+.app-demo .hc .sz{font-size:12px;color:#8A8698}
+.app-demo .hc .wt{font-size:13px;color:#D4667A;font-weight:700;margin-top:2px}
+.app-demo .sr{display:flex;gap:6px;margin:4px 14px}
+.app-demo .sp{flex:1;background:#fff;border:1px solid rgba(212,102,122,0.1);border-radius:12px;padding:6px 4px;text-align:center;box-shadow:0 2px 8px rgba(212,102,122,0.04)}
+.app-demo .sp .v{font-family:'DM Serif Display',serif;font-size:17px;color:#2D2A3E;line-height:1}
+.app-demo .sp .l{font-size:9px;color:#8A8698;margin-top:2px}
+.app-demo .dn{margin:4px 14px;padding:8px 12px;background:#fff;border:1px solid rgba(212,102,122,0.1);border-left:3px solid #FF8FA3;border-radius:0 14px 14px 0;box-shadow:0 2px 8px rgba(212,102,122,0.04)}
+.app-demo .dn .fr{font-size:9px;color:#D4667A;font-weight:700;letter-spacing:1px;margin-bottom:3px}
+.app-demo .dn .tx{font-size:11px;color:#5A5768;line-height:1.55;font-style:italic}
+.app-demo .cb{margin:4px 14px;padding:9px;background:linear-gradient(135deg,#FF8FA3,#E8627C);border-radius:14px;text-align:center;font-size:12px;font-weight:700;color:#fff;letter-spacing:0.5px;box-shadow:0 6px 20px rgba(232,98,124,0.3)}
+.app-demo .tb{margin-top:auto;padding:8px 12px 4px;display:flex;justify-content:space-around;border-top:1px solid rgba(212,102,122,0.08)}
+.app-demo .t{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:#B8B4C4;padding:4px 8px}
+.app-demo .t.on{color:#D4667A;font-weight:700}
+.app-demo .t .i{font-size:16px}
+.app-demo .hb{width:100px;height:4px;border-radius:2px;background:rgba(45,42,62,0.12);margin:4px auto 6px}
+.app-demo .ti{display:flex;align-items:center;gap:8px;margin:0 14px;padding:7px 10px;background:#fff;border:1px solid rgba(212,102,122,0.06);border-radius:14px;margin-bottom:4px;box-shadow:0 1px 4px rgba(212,102,122,0.03)}
+.app-demo .tc{width:28px;height:28px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.app-demo .tl{flex:1;min-width:0}
+.app-demo .tl strong{font-size:12px;color:#2D2A3E;display:block}
+.app-demo .tl small{font-size:10px;color:#8A8698}
+.app-demo .bd{font-size:9px;font-weight:700;padding:4px 10px;border-radius:999px;flex-shrink:0}
+.app-demo .bd-p{background:rgba(255,143,163,0.12);color:#D4667A}
+.app-demo .bd-g{background:rgba(76,175,80,0.1);color:#4CAF50}
+.app-demo .bd-b{background:rgba(100,149,237,0.1);color:#6495ED}
+.app-demo .bd-a{background:rgba(240,192,96,0.1);color:#D4A944}
+.app-demo .pn{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px}
+.app-demo .pd{width:8px;height:8px;border-radius:50%;background:rgba(212,102,122,0.15);cursor:pointer;transition:all 0.2s}
+.app-demo .pd.on{background:#D4667A;box-shadow:0 0 8px rgba(212,102,122,0.4)}
+.app-demo .pa{width:30px;height:30px;border-radius:50%;border:1px solid rgba(212,102,122,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#8A8698;transition:all 0.2s;background:#fff}
+.app-demo .pa:hover{border-color:#D4667A;color:#D4667A}
+.app-demo .pl{text-align:center;font-size:11px;color:#8A8698;margin-top:6px}
+.app-demo .st{display:flex;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);width:100%}
+.app-demo .ss{min-width:100%;max-width:100%;flex-shrink:0;overflow:hidden}
+.demo-card{background:var(--bg-card);border:1.5px solid rgba(212,102,122,0.18);border-radius:20px;padding:32px 28px;margin:24px 0;box-shadow:0 8px 32px rgba(212,102,122,0.04);overflow:hidden}
+.demo-card .dc-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.demo-card .dc-icon{font-size:28px}
+.demo-card .dc-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text)}
+.demo-card .dc-desc{font-size:15px;color:var(--text-dim);line-height:1.6;margin-bottom:0}
+</style>
+
+<!-- CARD 1: PREGNANCY JOURNEY TRACKER — IFRAME OF PINK CONCEPT -->
+<div class="demo-card reveal">
+<div class="dc-header"><div class="dc-icon">📱</div><div><div class="dc-title">Pregnancy Journey Tracker</div><div style="display:flex;gap:6px;margin-top:6px"><span class="fb-tag mobile">iOS</span><span class="fb-tag mobile">Android</span></div></div></div>
+<ul class="deliv-list">
+<li><strong>Week-by-Week Timeline</strong> Fetal development, body changes, and what to expect, written in Dr. Hervey's voice, adapted from your book content</li>
+<li><strong>Trimester Milestones</strong> Key appointments, tests, and decisions mapped to each stage with evidence-based context</li>
+<li><strong>Due Date Dashboard</strong> Countdown, current week, fetal size visualization, and daily tips from your books</li>
+<li><strong>Symptom & Wellness Tracker</strong> Log symptoms, moods, water intake, sleep, and energy with contextual guidance</li>
+<li><strong>Appointment Reminders</strong> Push notifications for prenatal visits, tests, and preparation checklists</li>
+</ul>
+<div style="margin-top:20px;border-radius:16px;overflow:hidden;border:1.5px solid rgba(212,102,122,0.12)">
+<iframe srcdoc='<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"DM Sans",sans-serif;background:#FFF7F5;color:#2D2A3E;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px}.phone{margin:0 auto;width:300px;position:relative}.phone-body{background:linear-gradient(160deg,#E8E4E0 0%,#D8D4D0 100%);border-radius:38px;padding:4px;box-shadow:0 30px 80px rgba(212,102,122,0.15),0 8px 24px rgba(0,0,0,0.06),inset 0 1px 0 rgba(255,255,255,0.6);border:1px solid rgba(200,196,192,0.4);position:relative}.phone-body::before{content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);width:72px;height:20px;background:#1a1a1a;border-radius:12px;z-index:10}.phone-body::after{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:rgba(30,30,40,0.6);z-index:11;margin-left:24px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4)}.screen{border-radius:35px;overflow:hidden;background:#fff;position:relative;border:0.5px solid rgba(0,0,0,0.08)}.screen-inner{min-height:540px;display:flex;flex-direction:column}.sb{display:flex;justify-content:space-between;align-items:center;padding:10px 18px 6px;font-size:11px;font-weight:600;color:#2D2A3E}.app-header{padding:4px 18px 6px;display:flex;align-items:center;justify-content:space-between}.app-logo{font-family:"DM Serif Display",serif;font-size:16px;background:linear-gradient(135deg,#FF8FA3,#E8627C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.app-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD6DE,#FFB6C1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#D4667A}.hero-card{margin:6px 14px;padding:20px 16px;background:linear-gradient(135deg,#FFF0F3 0%,#FFE4EA 50%,#FFD6DE 100%);border-radius:20px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,182,193,0.2)}.hero-card::before{content:"";position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.4)}.hero-card .week{font-family:"DM Serif Display",serif;font-size:28px;color:#2D2A3E;line-height:1}.hero-card .trim{font-size:10px;color:#D4667A;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}.hero-card .emoji{font-size:40px;margin:10px 0 4px}.hero-card .size{font-size:12px;color:#8A8698}.hero-card .weight{font-size:13px;color:#D4667A;font-weight:700;margin-top:2px}.stats-row{display:flex;gap:8px;margin:8px 14px}.stat-pill{flex:1;background:#fff;border:1px solid rgba(212,102,122,0.1);border-radius:14px;padding:10px 6px;text-align:center;box-shadow:0 2px 8px rgba(212,102,122,0.04)}.stat-pill .val{font-family:"DM Serif Display",serif;font-size:20px;color:#2D2A3E;line-height:1}.stat-pill .lbl{font-size:9px;color:#8A8698;margin-top:2px}.doc-note{margin:8px 14px;padding:12px 14px;background:#fff;border:1px solid rgba(212,102,122,0.1);border-left:3px solid #FF8FA3;border-radius:0 14px 14px 0;box-shadow:0 2px 8px rgba(212,102,122,0.04)}.doc-note .from{font-size:9px;color:#D4667A;font-weight:700;letter-spacing:1px;margin-bottom:3px}.doc-note .txt{font-size:11px;color:#5A5768;line-height:1.55;font-style:italic}.cta-btn{margin:8px 14px;padding:12px;background:linear-gradient(135deg,#FF8FA3,#E8627C);border-radius:14px;text-align:center;font-size:12px;font-weight:700;color:#fff;letter-spacing:0.5px;box-shadow:0 6px 20px rgba(232,98,124,0.3)}.tab-bar{margin-top:auto;padding:8px 12px 4px;display:flex;justify-content:space-around;border-top:1px solid rgba(212,102,122,0.08)}.tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:#B8B4C4;padding:4px 8px}.tab.on{color:#D4667A;font-weight:700}.tab .ti{font-size:16px}.home-bar{width:100px;height:4px;border-radius:2px;background:rgba(45,42,62,0.12);margin:4px auto 6px}.track-item{display:flex;align-items:center;gap:8px;margin:0 14px;padding:8px 10px;background:#fff;border:1px solid rgba(212,102,122,0.06);border-radius:14px;margin-bottom:4px;box-shadow:0 1px 4px rgba(212,102,122,0.03)}.track-ico{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}.track-lbl{flex:1;min-width:0}.track-lbl strong{font-size:12px;color:#2D2A3E;display:block}.track-lbl small{font-size:10px;color:#8A8698}.track-badge{font-size:9px;font-weight:700;padding:4px 10px;border-radius:999px;flex-shrink:0}.tb-pink{background:rgba(255,143,163,0.12);color:#D4667A}.tb-green{background:rgba(76,175,80,0.1);color:#4CAF50}.tb-blue{background:rgba(100,149,237,0.1);color:#6495ED}.tb-amber{background:rgba(240,192,96,0.1);color:#D4A944}.phone-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px}.pn-dot{width:8px;height:8px;border-radius:50%;background:rgba(212,102,122,0.15);cursor:pointer;transition:all 0.2s}.pn-dot.on{background:#D4667A;box-shadow:0 0 8px rgba(212,102,122,0.4)}.pn-arr{width:30px;height:30px;border-radius:50%;border:1px solid rgba(212,102,122,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#8A8698;transition:all 0.2s;background:#fff}.pn-arr:hover{border-color:#D4667A;color:#D4667A}.pn-label{text-align:center;font-size:11px;color:#8A8698;margin-top:6px}.screen-track{display:flex;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);width:100%}.screen-slide{min-width:100%;max-width:100%;flex-shrink:0;overflow:hidden}.footer-note{text-align:center;margin-top:20px;font-size:11px;color:#B8B4C4;line-height:1.5;max-width:320px;margin-left:auto;margin-right:auto}.footer-note strong{color:#D4667A}</style></head><body><div class="phone"><div class="phone-body"><div class="screen"><div class="screen-track" id="sTrack"><div class="screen-slide"><div class="screen-inner"><div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div><div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div><div class="hero-card"><div class="trim">Third Trimester</div><div class="week">Week 28</div><div class="emoji">🍈</div><div class="size">Baby is the size of an eggplant</div><div class="weight">~2.2 lbs · 14.8 in</div></div><div class="stats-row"><div class="stat-pill"><div class="val">28</div><div class="lbl">Week</div></div><div class="stat-pill"><div class="val">70%</div><div class="lbl">Done</div></div><div class="stat-pill"><div class="val">96</div><div class="lbl">To Go</div></div></div><div class="doc-note"><div class="from">📖 DR. HERVEY&#39;S NOTE</div><div class="txt">&quot;Your baby is now dreaming. REM sleep patterns are forming this week, meaning your little one is processing the world before they even see it.&quot;</div></div><div class="cta-btn">View Full Week Guide →</div><div class="tab-bar"><div class="tab on"><div class="ti">🏠</div>Home</div><div class="tab"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab"><div class="ti">💬</div>Stories</div><div class="tab"><div class="ti">📋</div>Plan</div></div><div class="home-bar"></div></div></div><div class="screen-slide"><div class="screen-inner"><div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div><div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div><div style="padding:4px 14px 8px;font-family:DM Serif Display,serif;font-size:20px;color:#2D2A3E">My Trackers</div><div class="track-item"><div class="track-ico" style="background:rgba(76,175,80,0.08)">👶</div><div class="track-lbl"><strong>Kick Counter</strong><small>Last: 12 kicks in 18 min</small></div><div class="track-badge tb-green">Start</div></div><div class="track-item"><div class="track-ico" style="background:rgba(255,143,163,0.08)">⏱️</div><div class="track-lbl"><strong>Contraction Timer</strong><small>Not active</small></div><div class="track-badge tb-pink">Start</div></div><div class="track-item"><div class="track-ico" style="background:rgba(100,149,237,0.08)">💧</div><div class="track-lbl"><strong>Water Intake</strong><small>5 of 8 glasses today</small></div><div class="track-badge tb-blue">Log</div></div><div class="track-item"><div class="track-ico" style="background:rgba(240,192,96,0.08)">😴</div><div class="track-lbl"><strong>Sleep Log</strong><small>Last night: 6.5 hours</small></div><div class="track-badge tb-amber">Log</div></div><div class="track-item"><div class="track-ico" style="background:rgba(155,111,192,0.08)">🩺</div><div class="track-lbl"><strong>Symptom Diary</strong><small>3 entries this week</small></div><div class="track-badge tb-pink">Add</div></div><div class="track-item"><div class="track-ico" style="background:rgba(255,143,163,0.08)">🧘</div><div class="track-lbl"><strong>Mood Check</strong><small>Today: Feeling good ☀️</small></div><div class="track-badge tb-green">Log</div></div><div class="tab-bar"><div class="tab"><div class="ti">🏠</div>Home</div><div class="tab on"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab"><div class="ti">💬</div>Stories</div><div class="tab"><div class="ti">📋</div>Plan</div></div><div class="home-bar"></div></div></div><div class="screen-slide"><div class="screen-inner"><div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div><div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div><div style="padding:4px 14px 2px;font-family:DM Serif Display,serif;font-size:20px;color:#2D2A3E">Birth Stories</div><div style="padding:0 14px 8px;font-size:9px;color:#B8B4C4;letter-spacing:1.5px">FROM HER BODY, HER BABY</div><div style="margin:0 14px 5px;padding:11px;background:linear-gradient(135deg,#FFF5F7,#FFE8ED);border:1px solid rgba(255,143,163,0.15);border-radius:16px"><div style="font-family:DM Serif Display,serif;font-size:15px;color:#2D2A3E;margin-bottom:4px">Kieara&#39;s Story</div><div style="font-size:11px;color:#5A5768;line-height:1.55;font-style:italic">&quot;I will not push without an epidural.&quot; Her voice cut through the urgency of the room...</div><div style="margin-top:8px"><span class="track-badge tb-pink" style="font-size:10px;padding:5px 12px">Read Full Story →</span></div></div><div style="margin:0 14px 5px;padding:11px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-radius:16px"><div style="font-family:DM Serif Display,serif;font-size:15px;color:#2D2A3E;margin-bottom:4px">Amara&#39;s Choice</div><div style="font-size:11px;color:#5A5768;line-height:1.55;font-style:italic">&quot;Everyone told me what I should do. My midwife asked me what I wanted.&quot;</div><div style="margin-top:8px"><span class="track-badge tb-pink" style="font-size:10px;padding:5px 12px">Read Full Story →</span></div></div><div style="margin:0 14px 5px;padding:11px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-radius:16px"><div style="font-family:DM Serif Display,serif;font-size:15px;color:#2D2A3E;margin-bottom:4px">Denise &amp; The Plan</div><div style="font-size:11px;color:#5A5768;line-height:1.55;font-style:italic">&quot;I walked in with a plan. They tried to change it. I held my ground.&quot;</div><div style="margin-top:8px"><span class="track-badge tb-pink" style="font-size:10px;padding:5px 12px">Read Full Story →</span></div></div><div class="tab-bar"><div class="tab"><div class="ti">🏠</div>Home</div><div class="tab"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab on"><div class="ti">💬</div>Stories</div><div class="tab"><div class="ti">📋</div>Plan</div></div><div class="home-bar"></div></div></div><div class="screen-slide"><div class="screen-inner"><div class="sb"><span>9:41</span><span style="font-size:10px">●●●●○ 5G</span></div><div class="app-header"><div class="app-logo">Baby Catcher</div><div class="app-avatar">MH</div></div><div style="padding:4px 14px 2px;font-family:DM Serif Display,serif;font-size:20px;color:#2D2A3E">My Birth Plan</div><div style="padding:0 14px 8px;font-size:9px;color:#B8B4C4;letter-spacing:1.5px">AUTONOMY FRAMEWORK</div><div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #4CAF50;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#4CAF50;margin-bottom:4px">✓ Labor Preferences</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Freedom to move · Intermittent monitoring · Delayed cord clamping · Skin-to-skin immediately</div></div><div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #D4667A;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#D4667A;margin-bottom:4px">⏳ Pain Management</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Open to epidural if requested · No pressure · Support person present always</div></div><div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #9B6FC0;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#9B6FC0;margin-bottom:4px">🏥 If Plans Change</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Explain all options · Include me in every decision · Informed consent required</div></div><div style="margin:0 14px 6px;padding:14px;background:#fff;border:1px solid rgba(212,102,122,0.08);border-left:3px solid #6495ED;border-radius:0 14px 14px 0"><div style="font-size:12px;font-weight:700;color:#6495ED;margin-bottom:4px">🍼 Postpartum Wishes</div><div style="font-size:10px;color:#5A5768;line-height:1.5">Breastfeeding support · Golden hour uninterrupted · Partner stays overnight</div></div><div class="cta-btn" style="margin-top:4px">Export Birth Plan as PDF →</div><div class="tab-bar"><div class="tab"><div class="ti">🏠</div>Home</div><div class="tab"><div class="ti">🔧</div>Tools</div><div class="tab"><div class="ti">📚</div>Learn</div><div class="tab"><div class="ti">💬</div>Stories</div><div class="tab on"><div class="ti">📋</div>Plan</div></div><div class="home-bar"></div></div></div></div></div></div><div class="phone-nav"><div class="pn-arr" onclick="pNav(-1)">←</div><div style="display:flex;gap:6px"><div class="pn-dot on" onclick="pTo(0)"></div><div class="pn-dot" onclick="pTo(1)"></div><div class="pn-dot" onclick="pTo(2)"></div><div class="pn-dot" onclick="pTo(3)"></div></div><div class="pn-arr" onclick="pNav(1)">→</div></div><div class="pn-label" id="pLabel">1 / 4 — Week Dashboard</div></div><div class="footer-note"><strong>Note:</strong> Sample concept screens. Actual design created collaboratively with Dr. Hervey after onboarding, with full approval at every stage.</div><script>const labels=["Week Dashboard","My Trackers","Birth Stories","Birth Plan Builder"];let cur=0;const total=4;function update(){document.getElementById("sTrack").style.transform="translateX(-"+cur*100+"%)";document.querySelectorAll(".pn-dot").forEach((d,i)=>d.classList.toggle("on",i===cur));document.getElementById("pLabel").textContent=(cur+1)+" / "+total+" — "+labels[cur]}function pNav(d){cur+=d;if(cur<0)cur=total-1;if(cur>=total)cur=0;update()}function pTo(i){cur=i;update()}</script></body></html>' style="width:100%;height:780px;border:none;background:#FFF7F5" scrolling="no"></iframe>
+</div>
+<div style="text-align:center;margin-top:14px;font-size:11px;color:var(--text-muted);line-height:1.5"><strong style="color:var(--pink)">Note:</strong> Sample concept screens. Actual design created collaboratively with Dr. Hervey after onboarding, with full approval at every stage.</div>
+</div>
+
+<!-- CARD 2: PUBLIC-FACING WEBSITE -->
+<div class="demo-card reveal">
+<div class="dc-header"><div class="dc-icon">🌐</div><div><div class="dc-title">Public-Facing Website</div><div style="font-size:13px;color:var(--text-dim);margin-top:4px">babycatcherapp.com</div></div></div>
+<p class="dc-desc">A companion marketing website bridging the Baby Catcher app with Dr. Hervey's existing practice brand, pulling real content from teambabycatcher.com and adding app download funnels.</p>
+<div class="demo-frame" style="margin-top:20px"><div class="demo-browser-bar"><div class="demo-dot r"></div><div class="demo-dot y"></div><div class="demo-dot g"></div><div class="demo-url">babycatcherapp.com</div></div>
+<div class="demo-screen" style="padding:0;min-height:auto">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border)"><div style="font-family:'DM Serif Display',serif;font-size:18px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">🍼 Baby Catcher</div><div style="display:flex;gap:16px;font-size:11px;color:var(--text-dim);align-items:center"><span>Features</span><span>Our Team</span><span>Services</span><span>Dr. Hervey</span><span>Books</span><span style="background:var(--gradient);color:#fff;padding:6px 14px;border-radius:8px;font-weight:700;font-size:10px">Download Free</span></div></div>
+<div style="padding:40px 28px 32px;background:linear-gradient(180deg,#FFF0F3 0%,#fff 100%);position:relative;overflow:hidden"><div style="position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,143,163,0.15) 0%,transparent 70%)"></div><div style="position:relative;z-index:1;max-width:560px"><div style="font-size:10px;color:var(--pink);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Premier OBGYN · Team Baby Catcher</div><div style="font-family:'DM Serif Display',serif;font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--text);margin-bottom:14px">Compassionate Women's Healthcare.<br>Now In <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Your Pocket.</span></div><div style="font-size:14px;color:var(--text-dim);line-height:1.65;margin-bottom:18px">Certified Nurse Midwives and OB/GYN physicians working together to provide exceptional care. Week-by-week guidance from Dr. Michael Hervey.</div><div style="display:flex;gap:10px"><div style="background:var(--gradient);padding:10px 20px;border-radius:10px;font-size:12px;font-weight:700;color:#fff;box-shadow:0 4px 12px rgba(232,98,124,0.2)">Download for iOS</div><div style="border:1px solid var(--border-accent);padding:10px 20px;border-radius:10px;font-size:12px;font-weight:600;color:var(--pink)">Google Play</div></div></div></div>
+<div style="display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div style="flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border)"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">4,000+</div><div style="font-size:9px;color:var(--text-muted)">Women in Care</div></div><div style="flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border)"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">100+</div><div style="font-size:9px;color:var(--text-muted)">Deliveries Monthly</div></div><div style="flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border)"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">12</div><div style="font-size:9px;color:var(--text-muted)">Clinical Team</div></div><div style="flex:1;text-align:center;padding:14px 8px"><div style="font-family:'DM Serif Display',serif;font-size:22px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">★ 5.0</div><div style="font-size:9px;color:var(--text-muted)">Book Rating</div></div></div>
+<div style="padding:24px 28px"><div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:4px;text-align:center">Our Services</div><div style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:14px">From teambabycatcher.com, now connected to the app</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">🤰</div><div style="font-size:10px;color:var(--text-dim);font-weight:600">Obstetrics</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">👶</div><div style="font-size:10px;color:var(--text-dim);font-weight:600">Midwifery</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">🩺</div><div style="font-size:10px;color:var(--text-dim);font-weight:600">Gynecological</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">🧠</div><div style="font-size:10px;color:var(--text-dim);font-weight:600">Mental Health</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">🏳️‍🌈</div><div style="font-size:10px;color:var(--text-dim);font-weight:600">LGBTQ+ Care</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">🔬</div><div style="font-size:10px;color:var(--text-dim);font-weight:600">Surgical</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">📚</div><div style="font-size:10px;color:var(--text-dim);font-weight:600">Prenatal Classes</div></div><div style="background:linear-gradient(135deg,#FFF0F3,#FFE8ED);border:1px solid rgba(255,143,163,0.15);border-radius:10px;padding:12px 8px;text-align:center"><div style="font-size:18px;margin-bottom:4px">📱</div><div style="font-size:10px;color:var(--pink);font-weight:700">Baby Catcher App</div></div></div></div>
+<div style="padding:20px 28px;background:linear-gradient(135deg,#FFF0F3 0%,#FFE4EA 100%);border-top:1px solid var(--border)"><div style="display:flex;align-items:center;gap:16px"><div style="flex:1"><div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:4px">Get the Baby Catcher App</div><div style="font-size:11px;color:var(--text-dim);line-height:1.5">Free to download. Week-by-week guidance, birth stories, birth plan builder, and more.</div></div><div style="background:var(--gradient);padding:10px 18px;border-radius:10px;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(232,98,124,0.2)">Download</div></div></div>
+<div style="padding:14px 28px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-muted)"><span>© 2026 Premier OBGYN LLC · Phoenix, AZ</span><span>1300 N 12th St, Suite 620 · (602) 283-3668</span></div>
+</div></div>
+</div>
+
+<!-- CARD 3: ADMIN PANEL -->
+<div class="demo-card reveal">
+<div class="dc-header"><div class="dc-icon">🔧</div><div><div class="dc-title">Web App Admin Panel</div><div style="font-size:13px;color:var(--text-dim);margin-top:4px">admin.babycatcherapp.com</div></div></div>
+<p class="dc-desc">A secure dashboard where your team manages content, monitors engagement, reviews analytics, and controls the app without touching code.</p>
+<div class="demo-frame" style="margin-top:20px"><div class="demo-browser-bar"><div class="demo-dot r"></div><div class="demo-dot y"></div><div class="demo-dot g"></div><div class="demo-url">admin.babycatcherapp.com</div></div>
+<div class="demo-screen has-sidebar" style="min-height:340px">
+<div class="ds-sidebar" style="width:170px;padding:14px 10px;gap:2px">
+<div style="font-family:'DM Serif Display',serif;font-size:14px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;padding:4px 10px 10px;border-bottom:1px solid var(--border);margin-bottom:4px">🍼 Baby Catcher</div>
+<span class="active" style="font-size:12px">📊 Dashboard</span><span style="font-size:12px">📄 Content</span><span style="font-size:12px">💬 Birth Stories</span><span style="font-size:12px">👥 Users</span><span style="font-size:12px">💳 Subscriptions</span><span style="font-size:12px">📋 Birth Plans</span><span style="font-size:12px">📈 Analytics</span><span style="font-size:12px">🔐 HIPAA Logs</span><span style="font-size:12px">⚙️ Settings</span>
+</div>
+<div style="flex:1;padding:18px 22px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:15px;font-weight:700;color:var(--text)">Dashboard Overview</div><div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">Last 30 days</div></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 12px"><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Total Users</div><div style="font-family:'DM Serif Display',serif;font-size:24px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">4,238</div><div style="font-size:9px;color:#4CAF50;margin-top:2px">↑ 12.4%</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 12px"><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Premium</div><div style="font-family:'DM Serif Display',serif;font-size:24px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">312</div><div style="font-size:9px;color:#4CAF50;margin-top:2px">↑ 8.7%</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 12px"><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">MRR</div><div style="font-family:'DM Serif Display',serif;font-size:24px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">$2,184</div><div style="font-size:9px;color:#4CAF50;margin-top:2px">↑ $340</div></div><div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 12px"><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px">Retention</div><div style="font-family:'DM Serif Display',serif;font-size:24px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">94.2%</div><div style="font-size:9px;color:#4CAF50;margin-top:2px">Avg: 78%</div></div></div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px">User Growth · Last 6 Months</div><div style="display:flex;align-items:flex-end;gap:6px;height:70px"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;background:var(--gradient);border-radius:4px 4px 0 0;height:25px;opacity:0.6"></div><div style="font-size:8px;color:var(--text-muted)">Jan</div></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;background:var(--gradient);border-radius:4px 4px 0 0;height:32px;opacity:0.7"></div><div style="font-size:8px;color:var(--text-muted)">Feb</div></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;background:var(--gradient);border-radius:4px 4px 0 0;height:38px;opacity:0.75"></div><div style="font-size:8px;color:var(--text-muted)">Mar</div></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;background:var(--gradient);border-radius:4px 4px 0 0;height:45px;opacity:0.8"></div><div style="font-size:8px;color:var(--text-muted)">Apr</div></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;background:var(--gradient);border-radius:4px 4px 0 0;height:55px;opacity:0.9"></div><div style="font-size:8px;color:var(--text-muted)">May</div></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;background:var(--gradient);border-radius:4px 4px 0 0;height:66px"></div><div style="font-size:8px;color:var(--text-muted)">Jun</div></div></div></div>
+<div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px">Recent Activity</div>
+<div class="ds-list-item" style="padding:7px 0"><div class="ds-avatar">SM</div><div class="ds-name"><strong>Sarah M.</strong> upgraded to Baby Catcher+</div><div class="ds-badge green">Premium</div></div>
+<div class="ds-list-item" style="padding:7px 0"><div class="ds-avatar">JR</div><div class="ds-name"><strong>Jessica R.</strong> exported birth plan as PDF</div><div class="ds-badge teal">Export</div></div>
+<div class="ds-list-item" style="padding:7px 0"><div class="ds-avatar">KW</div><div class="ds-name"><strong>Kieara W.</strong> completed postpartum module</div><div class="ds-badge blue">Complete</div></div>
+<div class="ds-list-item" style="padding:7px 0"><div class="ds-avatar" style="font-size:12px">🔐</div><div class="ds-name"><strong>HIPAA Audit:</strong> Q2 access log exported</div><div class="ds-badge amber">Audit</div></div>
+</div></div></div>
+</div>
+
+<div style="text-align:center;margin-top:16px;padding:12px 18px;background:rgba(212,102,122,0.04);border:1px solid rgba(212,102,122,0.1);border-radius:10px;font-size:12px;color:var(--text-muted);line-height:1.6"><strong style="color:var(--pink)">Note:</strong> All demos above are sample layouts to illustrate scope and functionality. The actual design, branding, and user experience will be developed collaboratively with Dr. Hervey after project onboarding, with sign-off at every milestone.</div>
+
+<!-- ADDITIONAL FEATURE BLOCKS -->
+<div class="feature-block reveal"><div class="feature-block-header"><div class="fb-icon">📋</div><h3>Birth Plan Builder</h3><div class="fb-tags"><span class="fb-tag web">Premium</span></div></div>
+<ul class="deliv-list">
+<li><strong>Autonomy-First Prompts</strong> Guided questions helping mothers articulate what they want, not just what's standard</li>
+<li><strong>Evidence-Based Options</strong> Each preference includes clinical context from <em>Empowering Birth</em></li>
+<li><strong>PDF Export</strong> Clean birth plan document to share with their OB/GYN or midwife</li>
+</ul></div>
+<div class="feature-block reveal"><div class="feature-block-header"><div class="fb-icon">💬</div><h3>Real Birth Stories Library</h3><div class="fb-tags"><span class="fb-tag web">Premium</span></div></div>
+<ul class="deliv-list">
+<li><strong>Adapted from Her Body, Her Baby</strong> Real patient stories formatted as immersive narrative content</li>
+<li><strong>Searchable by Topic</strong> Filter by birth type, complications, decisions, and outcomes</li>
+<li><strong>Doctor's Commentary</strong> Each story includes Dr. Hervey's clinical perspective</li>
+</ul></div>
+<div class="feature-block reveal"><div class="feature-block-header"><div class="fb-icon">🍼</div><h3>Postpartum Support Module</h3><div class="fb-tags"><span class="fb-tag mobile">iOS</span><span class="fb-tag mobile">Android</span></div></div>
+<ul class="deliv-list">
+<li><strong>Recovery Timeline</strong> Week-by-week postpartum recovery with body changes and emotional milestones</li>
+<li><strong>Feeding Tracker</strong> Breastfeeding, bottle feeding, and pumping sessions with duration and notes</li>
+<li><strong>Mental Health Check-Ins</strong> Gentle self-assessment prompts with guidance on seeking professional support</li>
+<li><strong>PWI Integration</strong> Direct links to Premier Wellness Initiative classes, support groups, and wellness services</li>
+</ul></div>
+</div></section><div class="container">
+<div class="reveal"><div class="section-label">11 · Tech Stack</div><h2 class="section-title">What Powers <em>Everything</em></h2><p class="section-lead">Enterprise-grade technology selected for performance, security, and scalability. Every layer is HIPAA-ready.</p></div>
+<div class="data-table-wrap reveal"><table class="data-table"><thead><tr><th style="width:22%">Layer</th><th style="width:28%">Technology</th><th style="width:50%">Why</th></tr></thead><tbody>
+<tr><td class="co-name">Mobile App</td><td class="num">React Native</td><td>Single codebase for iOS and Android. Faster development, lower cost, native performance. Used by Instagram, Shopify, and Bloomberg.</td></tr>
+<tr><td class="co-name">Backend API</td><td class="num">Node.js + Express</td><td>High-performance server architecture. Handles thousands of concurrent users. REST API with rate limiting and input validation.</td></tr>
+<tr><td class="co-name">Database</td><td class="num">PostgreSQL</td><td>HIPAA-compliant relational database. Field-level encryption for PHI. Audit logging built into the schema.</td></tr>
+<tr><td class="co-name">Cloud Hosting</td><td class="num">AWS HIPAA-Eligible</td><td>BAA-ready infrastructure. Auto-scaling, 99.99% uptime SLA. Same infrastructure used by major health systems.</td></tr>
+<tr><td class="co-name">Encryption</td><td class="num">TLS 1.3 + AES-256</td><td>Military-grade encryption in transit and at rest. Zero-knowledge architecture for sensitive health data.</td></tr>
+<tr><td class="co-name">Payments</td><td class="num">RevenueCat + Stripe</td><td>Industry-standard subscription management. Handles App Store and Google Play billing, trials, upgrades, and cancellations.</td></tr>
+<tr><td class="co-name">CMS</td><td class="num">Custom Admin Panel</td><td>Your team manages all content, stories, and weekly guides without developer involvement. Role-based access controls.</td></tr>
+<tr><td class="co-name">Analytics</td><td class="num">Mixpanel + Firebase</td><td>User engagement tracking, funnel analysis, retention metrics. HIPAA-compliant event logging with no PHI in analytics.</td></tr>
+</tbody></table></div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="timeline"><div class="container">
+<div class="reveal"><div class="section-label">12 · Development Timeline</div><h2 class="section-title">90 to 120 Days. <em>Four Phases. One Launch.</em></h2><p class="section-lead">A focused, aggressive development process from discovery to App Store submission, with review cycles built into every phase.</p></div>
+<div class="timeline reveal">
+<div class="tl-item"><div class="tl-week">Phase 1 · Days 1 to 30</div><h5>Discovery, Architecture & Design</h5><p>Content audit of both published books. User personas. Information architecture. Database schema with HIPAA compliance layer. High-fidelity wireframes. Interactive prototype. Baby Catcher brand identity. Revision round with Dr. Hervey.</p></div>
+<div class="tl-item"><div class="tl-week">Phase 2 · Days 31 to 60</div><h5>Core Development & Premium Features</h5><p>React Native app scaffold. Week-by-week content engine. Pregnancy tracker with due date calculator. Kick counter and contraction timer. Birth plan builder with PDF export. Birth stories library. Postpartum module. Premium subscription flow via RevenueCat. User authentication with biometric support. Push notification system. HIPAA-compliant data layer.</p></div>
+<div class="tl-item"><div class="tl-week">Phase 3 · Days 61 to 90</div><h5>Admin Panel, Website & QA</h5><p>Full admin dashboard with analytics, user management, content editing, HIPAA audit logs, and subscription monitoring. Marketing website (babycatcherapp.com). Comprehensive QA across iOS and Android. HIPAA security audit. Performance optimization.</p></div>
+<div class="tl-item"><div class="tl-week">Phase 4 · Days 91 to 120</div><h5>Beta, Launch & Go-Live</h5><p>Beta launch with select patients from Premier OB/GYN. Feedback integration. App Store and Google Play submission. App Store Optimization (ASO). Launch marketing coordination. Analytics verification. Post-launch monitoring and first 30-day performance review.</p></div>
+</div></div></section>
+<div class="divider-spacer"></div>
+
+<section id="investment"><div class="container">
+<div class="reveal"><div class="section-label">13 · Investment</div><h2 class="section-title">What $20,000 <em>Actually Gets You</em></h2><p class="section-lead">This isn't a cost. It's the infrastructure for a new revenue stream, a new patient channel, and a new brand asset that compounds every month.</p></div>
+<div class="pricing-single reveal">
+<div class="tag">Complete App Development Package</div>
+<h4>Baby Catcher — Full Build</h4>
+<div class="amt">$20,000</div>
+<div class="per">One-time investment · 90 to 120-day delivery · First-year support included</div>
+<ul class="deliv-list" style="text-align:left;max-width:480px;margin:20px auto">
+<li><strong>iOS and Android Mobile App</strong> (React Native, single codebase)</li>
+<li><strong>HIPAA-Compliant Backend</strong> (AWS, encrypted, BAA-ready)</li>
+<li><strong>Admin Dashboard</strong> (content, users, analytics, audit logs)</li>
+<li><strong>Marketing Website</strong> (babycatcherapp.com)</li>
+<li><strong>Content Management System</strong> (your team updates content, no code)</li>
+<li><strong>Full UX/UI Design</strong> (wireframes, prototypes, brand identity)</li>
+<li><strong>App Store Submission</strong> (iOS App Store + Google Play)</li>
+<li><strong>First-Year Support</strong> (bug fixes, updates, monitoring)</li>
+<li><strong>Subscription Payment System</strong> (RevenueCat + Stripe)</li>
+<li><strong>Analytics Dashboard</strong> (Mixpanel + Firebase integration)</li>
+</ul>
+</div>
+
+<div class="reveal" style="margin-top:40px">
+<div class="compare-heading">Investment vs. <em>Return</em></div>
+<div class="compare-sub">Here's what $20,000 buys you, and what it unlocks. This investment pays for itself within the first subscriber cycle.</div>
+<div class="invest-vs">
+<div class="invest-col">
+<h4>Your Investment: <em>$20,000</em></h4>
+<div class="invest-item"><span class="ii-icon">💻</span><div><strong>Complete Mobile App</strong> iOS + Android, HIPAA-compliant, subscription-ready</div></div>
+<div class="invest-item"><span class="ii-icon">🎨</span><div><strong>Full UX/UI Design</strong> Brand identity, wireframes, prototypes, production design</div></div>
+<div class="invest-item"><span class="ii-icon">🔧</span><div><strong>Admin Dashboard</strong> Content management, analytics, user control, audit logs</div></div>
+<div class="invest-item"><span class="ii-icon">🌐</span><div><strong>Marketing Website</strong> babycatcherapp.com with SEO foundation and download funnels</div></div>
+<div class="invest-item"><span class="ii-icon">🛡️</span><div><strong>HIPAA Infrastructure</strong> Encryption, audit trails, BAA-ready cloud hosting</div></div>
+<div class="invest-item"><span class="ii-icon">📱</span><div><strong>App Store Launch</strong> Submission, ASO, and first-year support included</div></div>
+<div style="margin-top:12px;padding:14px;background:rgba(212,102,122,0.02);border:1px solid var(--border-light);border-radius:10px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--text)">$20,000</div><div style="font-size:12px;color:var(--text-muted)">One-time · 90 to 120-day delivery · First-year support</div></div>
+</div>
+<div class="invest-vs-arrow">→</div>
+<div class="invest-col return-col">
+<h4>What You <em>Get Back</em></h4>
+<div class="invest-item"><span class="ii-icon">💰</span><div><strong>$40,000+ in Year One</strong> Just 400 premium subscribers (10% of your patients) at ~$100 each. The app pays for itself 2x over in the first cycle.</div></div>
+<div class="invest-item"><span class="ii-icon">📈</span><div><strong>$100K-$400K+ at Scale</strong> As downloads grow beyond your patient base into organic and national reach, revenue compounds.</div></div>
+<div class="invest-item"><span class="ii-icon">👥</span><div><strong>Patient Database You Own</strong> Every download is a direct relationship. Not Athena's data, not Facebook's followers. Yours.</div></div>
+<div class="invest-item"><span class="ii-icon">🏆</span><div><strong>Brand Recognition at Scale</strong> Team Baby Catcher goes from a Phoenix practice to a nationwide pregnancy app brand.</div></div>
+<div class="invest-item"><span class="ii-icon">📖</span><div><strong>Book Sales Multiplier</strong> Every app user discovers Her Body, Her Baby and Empowering Birth. The app becomes your highest-performing book marketing channel.</div></div>
+<div class="invest-item"><span class="ii-icon">🔗</span><div><strong>Cross-Business Pipeline</strong> App users funnel into PWI classes, GLP-1 programs, concierge care, and your full service offering.</div></div>
+<div class="invest-item"><span class="ii-icon">🌍</span><div><strong>National Reach</strong> Scale beyond the 4,000 patients in Phoenix. Mothers anywhere can access Dr. Hervey's guidance.</div></div>
+<div class="invest-item"><span class="ii-icon">🎓</span><div><strong>Industry Authority</strong> The first practicing OB/GYN with a published-book-backed pregnancy app. Media, speaking, thought leadership.</div></div>
+<div style="margin-top:12px;padding:14px;background:rgba(255,143,163,0.08);border:1px solid rgba(255,143,163,0.15);border-radius:10px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:32px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$40K → $400K+</div><div style="font-size:12px;color:var(--text-muted)">Year one return · Growing every month · Recurring</div></div>
+</div>
+</div>
+
+<div style="margin-top:24px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:16px;padding:18px 24px;background:rgba(255,143,163,0.06);border:1px solid rgba(255,143,163,0.15);border-radius:12px"><div style="font-family:'DM Serif Display',serif;font-size:28px;min-width:180px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$20,000 → $40,000</div><div style="font-size:15px;color:var(--text-dim);line-height:1.5"><strong style="color:var(--text)">Safely a very easy target considering your stage.</strong> 10% of your existing 4,000 patients go premium. That's 400 subscribers. The app pays for itself 2x over in the first cycle.</div></div>
+<div style="display:flex;align-items:center;gap:16px;padding:18px 24px;background:rgba(255,143,163,0.08);border:1px solid rgba(255,143,163,0.2);border-radius:12px;box-shadow:0 4px 24px var(--glow)"><div style="font-family:'DM Serif Display',serif;font-size:28px;min-width:180px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$20,000 → $400,000+</div><div style="font-size:15px;color:var(--text-dim);line-height:1.5"><strong style="color:var(--text)">Just from the app with 4,000 subscribers.</strong> Your full patient base converting to premium. And this number grows every month as new patients download.</div></div>
+<div style="display:flex;align-items:center;gap:16px;padding:18px 24px;background:rgba(212,102,122,0.04);border:1px solid rgba(240,192,96,0.15);border-radius:12px"><div style="font-family:'DM Serif Display',serif;font-size:22px;min-width:180px;color:var(--pink)">+ EVERYTHING ELSE</div><div style="font-size:15px;color:var(--text-dim);line-height:1.5"><strong style="color:var(--text)">Every other service is on top of it.</strong> Book sales. PWI class enrollments. GLP-1 conversions. Concierge care upgrades. Speaking engagements. The app feeds every revenue stream you have.</div></div>
+</div>
+
+<div style="margin-top:16px;padding:18px 24px;background:rgba(255,143,163,0.06);border:1px solid rgba(255,143,163,0.12);border-radius:12px">
+<div class="section-body"><p style="margin:0"><strong style="color:var(--pink)">This investment pays for itself.</strong> And it does it fast. 400 subscribers. That's all it takes to return 2x your investment. Every subscriber after that is pure margin. Every new patient who downloads adds to the base. Every year, the revenue grows while the development cost stays at zero. <em>You're not buying an app. You're building a revenue engine.</em></p></div>
+</div>
+</div>
+</div></section>
+<div class="divider-spacer"></div>
+<section id="casestudies"><div class="container">
+<div class="reveal"><div class="section-label">14 · Case Studies</div><h2 class="section-title">We've Done This <em>Before</em></h2><p class="section-lead">Six recent projects that demonstrate our range across app development, interactive systems, and digital marketing platforms.</p></div>
+
+<div class="case-full reveal">
+<div class="case-header"><div><h4>Neighbors Interactive App</h4><div class="case-type">Mobile App · Social Platform</div></div></div>
+<div class="case-body">A neighbor-to-neighbor social app connecting local communities with real-time chat, event planning, safety alerts, and service marketplace. Built with React Native and Firebase, featuring geofenced communities and push notification system.</div>
+<div class="case-details"><div class="case-detail-item"><div class="cd-label">Platform</div><div class="cd-value">iOS + Android</div></div><div class="case-detail-item"><div class="cd-label">Stack</div><div class="cd-value">React Native, Firebase</div></div><div class="case-detail-item"><div class="cd-label">Duration</div><div class="cd-value">5 months</div></div><div class="case-detail-item"><div class="cd-label">Status</div><div class="cd-value">Live on App Store</div></div></div>
+</div>
+
+<div class="case-full reveal">
+<div class="case-header"><div><h4>Cambly Language Platform</h4><div class="case-type">Web Application · Ed-Tech</div></div></div>
+<div class="case-body">Comprehensive marketing strategy and digital presence overhaul for a language learning platform connecting students with native English tutors globally. SEO optimization, content marketing, and conversion funnel redesign.</div>
+<div class="case-details"><div class="case-detail-item"><div class="cd-label">Platform</div><div class="cd-value">Web + Marketing</div></div><div class="case-detail-item"><div class="cd-label">Focus</div><div class="cd-value">SEO + CRO</div></div><div class="case-detail-item"><div class="cd-label">Duration</div><div class="cd-value">Ongoing</div></div><div class="case-detail-item"><div class="cd-label">Impact</div><div class="cd-value">Lead gen pipeline</div></div></div>
+</div>
+
+<div class="case-full reveal">
+<div class="case-header"><div><h4>Growmatic SaaS Platform</h4><div class="case-type">Web Application · Marketing Tech</div></div></div>
+<div class="case-body">Full-stack development of a marketing automation SaaS platform with multi-tenant architecture, Stripe subscription billing, automated reporting dashboards, and white-label client portals.</div>
+<div class="case-details"><div class="case-detail-item"><div class="cd-label">Platform</div><div class="cd-value">Web SaaS</div></div><div class="case-detail-item"><div class="cd-label">Stack</div><div class="cd-value">Node.js, React, PostgreSQL</div></div><div class="case-detail-item"><div class="cd-label">Duration</div><div class="cd-value">6 months</div></div><div class="case-detail-item"><div class="cd-label">Features</div><div class="cd-value">Multi-tenant, Stripe</div></div></div>
+</div>
+
+<div class="case-full reveal">
+<div class="case-header"><div><h4>Firebird Trading Systems</h4><div class="case-type">Interactive Proposal · Financial Services</div></div></div>
+<div class="case-body">Built a complete interactive HTML marketing proposal for an options trading platform, featuring dark-themed UI, Make.com webhook tracking, cookie-based progress saving, resume overlay, and auto-scroll synced to an 18-minute narrated audio walkthrough.</div>
+<div class="case-details"><div class="case-detail-item"><div class="cd-label">Type</div><div class="cd-value">Interactive Proposal</div></div><div class="case-detail-item"><div class="cd-label">Features</div><div class="cd-value">Audio sync, webhooks</div></div><div class="case-detail-item"><div class="cd-label">Duration</div><div class="cd-value">Custom build</div></div><div class="case-detail-item"><div class="cd-label">Outcome</div><div class="cd-value">Client engaged</div></div></div>
+</div>
+
+<div class="case-full reveal">
+<div class="case-header"><div><h4>Talkobotic AI Platform</h4><div class="case-type">Web Application · AI/Conversational</div></div></div>
+<div class="case-body">Development of a conversational AI platform with custom chatbot builder, analytics dashboard, multi-channel deployment (web, WhatsApp, Messenger), and enterprise API integrations for customer support automation.</div>
+<div class="case-details"><div class="case-detail-item"><div class="cd-label">Platform</div><div class="cd-value">Web + API</div></div><div class="case-detail-item"><div class="cd-label">Stack</div><div class="cd-value">Python, React, NLP</div></div><div class="case-detail-item"><div class="cd-label">Duration</div><div class="cd-value">4 months</div></div><div class="case-detail-item"><div class="cd-label">Channels</div><div class="cd-value">Web, WhatsApp, Meta</div></div></div>
+</div>
+
+<div class="case-full reveal">
+<div class="case-header"><div><h4>PI Business Networking</h4><div class="case-type">Mobile App · Professional Networking</div></div></div>
+<div class="case-body">A business networking app with QR-code digital business cards, contact management, event check-in system, and CRM integration. Built for professional conferences and B2B relationship management.</div>
+<div class="case-details"><div class="case-detail-item"><div class="cd-label">Platform</div><div class="cd-value">iOS + Android</div></div><div class="case-detail-item"><div class="cd-label">Stack</div><div class="cd-value">React Native, Node.js</div></div><div class="case-detail-item"><div class="cd-label">Duration</div><div class="cd-value">4 months</div></div><div class="case-detail-item"><div class="cd-label">Features</div><div class="cd-value">QR, CRM, Events</div></div></div>
+</div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="roadmap"><div class="container">
+<div class="reveal"><div class="section-label">15 · Year One Roadmap</div><h2 class="section-title">From Launch to <em>25,000+ Users</em></h2><p class="section-lead">A three-phase growth strategy that starts with your existing patient base and scales nationwide through content, partnerships, and organic discovery.</p></div>
+
+<div class="roadmap-phase reveal">
+<div class="roadmap-header"><div class="roadmap-badge">1</div><div><div class="roadmap-period">Months 1 to 4 · Foundation</div><div class="roadmap-title">Launch & Seed Your Patient Base</div></div></div>
+<ul class="roadmap-goals">
+<li><strong>Soft launch to Premier OB/GYN patients</strong> through in-clinic signage, appointment follow-ups, and team recommendations</li>
+<li><strong>QR codes in exam rooms</strong> and waiting areas linking directly to App Store download</li>
+<li><strong>Social media announcement</strong> across Facebook, Instagram, TikTok, YouTube, and X</li>
+<li><strong>Email campaign</strong> to existing patient database with app preview and free download link</li>
+<li><strong>Book insert strategy</strong> for both Amazon titles driving readers to the app</li>
+</ul>
+<div class="roadmap-target"><div class="rt-num">2K</div><div class="rt-text"><strong>Target: 2,000 downloads</strong> from existing patient base, social media, and book readers. Focus on activation and early feedback.</div></div>
+</div>
+
+<div class="roadmap-phase reveal">
+<div class="roadmap-header"><div class="roadmap-badge">2</div><div><div class="roadmap-period">Months 5 to 8 · Growth</div><div class="roadmap-title">Content Marketing & Organic Discovery</div></div></div>
+<ul class="roadmap-goals">
+<li><strong>App Store Optimization (ASO)</strong> with keyword targeting for pregnancy, birth plan, OB/GYN, and maternal health</li>
+<li><strong>Content marketing</strong> with Dr. Hervey's blog posts, short-form videos, and podcast guest appearances</li>
+<li><strong>Strategic partnerships</strong> with midwifery programs, doula networks, and prenatal class providers</li>
+<li><strong>Referral program</strong> where existing users invite friends and earn premium trial extensions</li>
+<li><strong>Press outreach</strong> positioning Dr. Hervey as the first OB/GYN with a published-book-backed pregnancy app</li>
+</ul>
+<div class="roadmap-target"><div class="rt-num">10K</div><div class="rt-text"><strong>Target: 10,000 downloads</strong> with 5-7% premium conversion rate. Organic growth engine running. Media coverage building.</div></div>
+</div>
+
+<div class="roadmap-phase reveal">
+<div class="roadmap-header"><div class="roadmap-badge">3</div><div><div class="roadmap-period">Months 9 to 12 · Scale</div><div class="roadmap-title">National Reach & Revenue Optimization</div></div></div>
+<ul class="roadmap-goals">
+<li><strong>Paid acquisition</strong> on Instagram and Facebook targeting expectant mothers nationally</li>
+<li><strong>University partnerships</strong> leveraging Dr. Hervey's academic role at University of Arizona College of Medicine</li>
+<li><strong>Employer wellness programs</strong> offering Baby Catcher+ as a prenatal benefit through HR channels</li>
+<li><strong>Premium content expansion</strong> with new book content, expert interviews, and exclusive video series</li>
+<li><strong>Revenue optimization</strong> through pricing experiments, annual plan promotions, and retention campaigns</li>
+</ul>
+<div class="roadmap-target"><div class="rt-num">25K+</div><div class="rt-text"><strong>Target: 25,000+ downloads</strong> with growing premium base. Revenue self-sustaining. App operating as an independent business unit.</div></div>
+</div>
+</div></section>
+<div class="divider-spacer"></div>
+<section id="commitment"><div class="container">
+<div class="reveal"><div class="section-label">16 · Our Commitment</div><h2 class="section-title">How We <em>Work</em></h2><p class="section-lead">You're not hiring a developer. You're partnering with a strategy-first team that stays embedded throughout the build and beyond launch.</p></div>
+<div class="niche-grid reveal">
+<div class="niche-card"><div class="niche-icon">🧑‍💼</div><h4>Dedicated Project Manager</h4><div class="pitch">One point of contact from start to finish. Weekly status updates. No chasing. No ambiguity. <strong>You'll always know where things stand.</strong></div></div>
+<div class="niche-card"><div class="niche-icon">🏕️</div><h4>Basecamp for Communication</h4><div class="pitch">Every conversation, file, and decision documented in Basecamp. We don't hide in Slack channels or email threads. <strong>Everything is transparent, searchable, and organized.</strong></div></div>
+<div class="niche-card"><div class="niche-icon">🧪</div><h4>Dedicated QA Team</h4><div class="pitch">Every feature tested across devices, browsers, and edge cases before you see it. We don't ship until QA approves. <strong>Your patients deserve a polished product.</strong></div></div>
+<div class="niche-card"><div class="niche-icon">📄</div><h4>You Own Everything</h4><div class="pitch">Full IP ownership transfers to you on completion. Source code, design files, brand assets, content. <strong>No vendor lock-in. No ongoing licensing fees.</strong></div></div>
+</div>
+</div></section>
+<div class="divider-spacer"></div>
+
+<section id="nextsteps"><div class="container">
+<div class="reveal"><div class="section-label">17 · Next Steps</div><h2 class="section-title">Let's Build <em>This</em></h2><p class="section-lead">You've seen the strategy, the features, the tech, and the numbers. If this makes sense, let's get started.</p></div>
+<form action="https://api.web3forms.com/submit" method="POST" class="reveal" id="ctaForm" onsubmit="event.preventDefault(); submitFinalCTA();">
+<input type="hidden" name="access_key" value="76aac073-a971-494e-8e91-2c9d276ce80a">
+<input type="hidden" name="subject" value="Baby Catcher App - Dr. Hervey READY TO START">
+<input type="hidden" name="to" value="sam@kineticdigitalpublishers.com,teamkineticemail@gmail.com">
+<input type="hidden" name="recipient_requested" value="sam@kineticdigitalpublishers.com, teamkineticemail@gmail.com">
+<input type="hidden" name="cc" value="teamkineticemail@gmail.com">
+<input type="hidden" name="redirect" value="https://calendar.app.google/GJ7K3jeX5gwihydj9">
+<input type="hidden" name="_next" value="https://calendar.app.google/GJ7K3jeX5gwihydj9">
+<input type="hidden" name="from_name" value="Baby Catcher Proposal - Commitment">
+<div class="form-row"><label>Your Name</label><input type="text" name="name" required placeholder="Dr. Michael J. Hervey II"></div>
+<div class="form-row"><label>Email</label><input type="email" name="email" required placeholder="info@teambabycatcher.com"></div>
+<div class="form-row"><label>Phone</label><input type="tel" name="phone" placeholder="(602) 283-3668"></div>
+<div class="form-row"><label>Preferred Kickoff Week</label><select name="kickoff_week"><option value="">When would you like to start?</option><option>This week</option><option>Next week</option><option>Within 2 weeks</option><option>Within this month</option></select></div>
+<div class="form-row"><label>Anything Else?</label><textarea name="message" placeholder="Questions, specific requests, or anything you'd like addressed before we begin..."></textarea></div>
+<button type="submit" class="form-submit" id="ctaSubmitBtn">I'm Ready. Let's Start Building →</button>
+<div id="ctaMessage" style="font-size:13px;color:var(--pink);line-height:1.45;margin:12px 0 0;text-align:center;display:none"></div>
+</form>
+</div></section>
+
+<footer><div class="container">
+<p><strong>Baby Catcher App — Development Proposal</strong></p>
+<p style="margin-top:6px">Prepared exclusively for Dr. Michael J. Hervey II by Sam- Sr. Strategist, Kinetic Digital Publishers</p>
+<p style="margin-top:6px;font-size:12px;color:var(--text-muted)">This document is confidential and intended solely for the named recipient. © 2026 Kinetic Digital Publishers. All rights reserved.</p>
+</div></footer>
+
+<script>
+/* CHAPTERS */
+const chapters=[
+{t:0,l:"Welcome & Introduction",id:"intro"},
+{t:40,l:"Published Authority",id:"books"},
+{t:95,l:"The Big Idea",id:"bigidea"},
+{t:155,l:"Why This Works For You",id:"benefits"},
+{t:215,l:"The Problem & Market",id:"problem"},
+{t:280,l:"App Naming & HIPAA",id:"naming"},
+{t:320,l:"Revenue Model & Books vs App",id:"revenue"},
+{t:410,l:"Core Features Walkthrough",id:"features"},
+{t:490,l:"Tech Stack & Timeline",id:"timeline"},
+{t:540,l:"Investment & Returns",id:"investment"},
+{t:600,l:"Case Studies & Roadmap",id:"casestudies"},
+{t:650,l:"Our Commitment & Next Steps",id:"commitment"}
+];
+const audio=document.getElementById('narrationAudio');
+const player=document.getElementById('audio-player');
+const apFill=document.getElementById('apProgressFill');
+const apCur=document.getElementById('apCurrentTime');
+const apDur=document.getElementById('apDuration');
+const chList=document.getElementById('chaptersList');
+let isPlaying=false,chapOpen=false;
+function fmtTime(s){const m=Math.floor(s/60);return m+':'+(Math.floor(s%60)+'').padStart(2,'0')}
+function scrollToChapterSection(sectionId){
+  const el=document.getElementById(sectionId);
+  if(!el)return;
+  const topbar=document.querySelector('.topbar');
+  const offset=(topbar?topbar.offsetHeight:0)+18;
+  const y=el.getBoundingClientRect().top+window.pageYOffset-offset;
+  window.scrollTo({top:y,behavior:'smooth'});
+  try{localStorage.setItem(HERVEY_GATE_SCROLL_KEY,String(Math.max(0,y)));}catch(e){}
+}
+function goToChapter(c){
+  if(audio){
+    try{audio.currentTime=c.t;}catch(e){}
+    if(!isPlaying)togglePlay();
+  }
+  scrollToChapterSection(c.id);
+}
+function buildChapters(){chList.innerHTML='';chapters.forEach((c,i)=>{const d=document.createElement('div');d.className='ap-chapter';d.setAttribute('role','button');d.setAttribute('tabindex','0');d.setAttribute('aria-label','Go to '+c.l);d.innerHTML=`<div class="ap-chapter-dot"></div><div class="ap-chapter-time">${fmtTime(c.t)}</div><div class="ap-chapter-label">${c.l}</div>`;d.onclick=()=>goToChapter(c);d.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();goToChapter(c)}};chList.appendChild(d)})}
+buildChapters();
+function setPlayIcons(playing){document.getElementById('playIcon').style.display=playing?'none':'';document.getElementById('pauseIcon').style.display=playing?'':'none'}
+function togglePlay(){
+  if(!audio)return;
+  if(isPlaying){audio.pause();setPlayIcons(false);isPlaying=false;}
+  else{
+    const playPromise=audio.play();
+    if(playPromise&&typeof playPromise.catch==='function'){playPromise.catch(()=>{setPlayIcons(false);isPlaying=false;});}
+    setPlayIcons(true);isPlaying=true;
+  }
+}
+function toggleMinimize(){player.classList.toggle('minimized')}
+function toggleChapters(){chapOpen=!chapOpen;document.getElementById('apChapters').classList.toggle('open');document.getElementById('chToggleText').textContent=chapOpen?'▴ Hide Sections':'▾ Show All Sections'}
+audio.addEventListener('loadedmetadata',()=>{apDur.textContent=fmtTime(audio.duration)});
+audio.addEventListener('pause',()=>{isPlaying=false;setPlayIcons(false)});
+audio.addEventListener('play',()=>{isPlaying=true;setPlayIcons(true)});
+audio.addEventListener('ended',()=>{isPlaying=false;setPlayIcons(false)});
+audio.addEventListener('timeupdate',()=>{if(audio.duration){const pct=(audio.currentTime/audio.duration)*100;apFill.style.width=pct+'%';apCur.textContent=fmtTime(audio.currentTime)}
+const chs=document.querySelectorAll('.ap-chapter');chapters.forEach((c,i)=>{const next=chapters[i+1];const act=audio.currentTime>=c.t&&(!next||audio.currentTime<next.t);chs[i]&&(chs[i].className='ap-chapter'+(act?' active':''))})});
+function seekAudio(e){const r=document.getElementById('apProgressBar').getBoundingClientRect();const pct=(e.clientX-r.left)/r.width;audio.currentTime=pct*audio.duration}
+/* PHONE SLIDESHOW */
+function pMove(btn,dir){const wrap=btn.closest('.phone-wrap')||btn.closest('[data-demo]').querySelector('.phone-wrap')||btn.parentElement.parentElement.querySelector('.phone-device')?.parentElement;if(!wrap)return;const track=wrap.querySelector('.phone-track');const slides=track.querySelectorAll('.phone-slide');const dots=wrap.parentElement.querySelectorAll('.phone-dot');const lbl=wrap.parentElement.querySelector('.phone-lbl');let cur=parseInt(track.dataset.cur||0);cur+=dir;if(cur<0)cur=slides.length-1;if(cur>=slides.length)cur=0;track.style.transform=`translateX(-${cur*100}%)`;track.dataset.cur=cur;dots.forEach((d,i)=>d.classList.toggle('on',i===cur));if(lbl){const labels=JSON.parse(lbl.dataset.labels||'[]');lbl.innerHTML=`<span>${cur+1}</span> / ${slides.length} — ${labels[cur]||''}`}}
+function pGo(dot,idx){const wrap=dot.closest('.phone-wrap')||dot.parentElement.parentElement.parentElement;const track=wrap.querySelector('.phone-track');const dots=wrap.parentElement.querySelectorAll('.phone-dot');const lbl=wrap.parentElement.querySelector('.phone-lbl');track.style.transform=`translateX(-${idx*100}%)`;track.dataset.cur=idx;dots.forEach((d,i)=>d.classList.toggle('on',i===idx));if(lbl){const labels=JSON.parse(lbl.dataset.labels||'[]');lbl.innerHTML=`<span>${idx+1}</span> / ${track.querySelectorAll('.phone-slide').length} — ${labels[idx]||''}`}}
+/* APP DEMO NAV */
+const appLabels=['Week Dashboard','My Trackers','Birth Stories','Birth Plan Builder'];
+let appCur=0;
+function appUpdate(){document.getElementById('appTrack').style.transform=`translateX(-${appCur*100}%)`;document.querySelectorAll('.pd').forEach((d,i)=>d.classList.toggle('on',i===appCur));document.getElementById('appLabel').textContent=`${appCur+1} / 4 — ${appLabels[appCur]}`}
+function appNav(d){appCur+=d;if(appCur<0)appCur=3;if(appCur>3)appCur=0;appUpdate()}
+function appTo(i){appCur=i;appUpdate()}
+/* PINK CONCEPT PHONE NAV */
+const bcLabels=['Week Dashboard','My Trackers','Birth Stories','Birth Plan Builder'];
+let bcCur=0;
+function bcUpdate(){document.getElementById('bcTrack').style.transform=`translateX(-${bcCur*100}%)`;document.querySelectorAll('.bc-pd').forEach((d,i)=>d.classList.toggle('on',i===bcCur));document.getElementById('bcLabel').textContent=`${bcCur+1} / 4 — ${bcLabels[bcCur]}`}
+function bcNav(d){bcCur+=d;if(bcCur<0)bcCur=3;if(bcCur>3)bcCur=0;bcUpdate()}
+function bcTo(i){bcCur=i;bcUpdate()}
+
+/* PROPOSAL ACCESS GATE */
+const HERVEY_GATE_KEY='baby_catcher_proposal_access_granted';
+const HERVEY_GATE_SCROLL_KEY='baby_catcher_proposal_scroll_y';
+function showGateMessage(msg){const el=document.getElementById('gateMessage');if(el){el.textContent=msg;el.classList.add('show')}}
+function unlockProposal(startAtTop=true){
+  document.documentElement.classList.remove('proposal-locked');
+  document.body.classList.remove('proposal-locked');
+  document.getElementById('gateBackdrop')?.remove();
+  document.getElementById('gatePopup')?.remove();
+  document.getElementById('resumePopup')?.remove();
+  try{document.getElementById('audio-player')?.classList.add('visible')}catch(e){}
+  if(startAtTop){window.scrollTo({top:0,behavior:'smooth'});}
+}
+async function submitGateAndStart(){
+  const form=document.getElementById('gate-form');
+  const btn=document.getElementById('gateSubmitBtn');
+  if(!form || !form.checkValidity()){form?.reportValidity();return;}
+  if(btn){btn.disabled=true;btn.textContent='Unlocking Proposal...';}
+  showGateMessage('Please hold for a moment while we open your private walkthrough.');
+  const formData=new FormData(form);
+  formData.append('page_url', window.location.href || 'Direct proposal file');
+  formData.append('accessed_at', new Date().toLocaleString());
+  try{
+    const res=await fetch(form.action,{method:'POST',body:formData,headers:{'Accept':'application/json'}});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok || data.success===false){throw new Error(data.message || 'Submission could not be confirmed');}
+    localStorage.setItem(HERVEY_GATE_KEY,'yes');
+    localStorage.setItem(HERVEY_GATE_SCROLL_KEY,'0');
+    unlockProposal(true);
+    try{ if(typeof gtag==='function') gtag('event','proposal_gate_unlocked',{proposal:'Baby Catcher'}); }catch(e){}
+  }catch(err){
+    console.warn('Gate submission issue:',err);
+    showGateMessage('We could not confirm the access email, but your proposal is opening now so your review is not interrupted.');
+    localStorage.setItem(HERVEY_GATE_KEY,'yes');
+    setTimeout(()=>unlockProposal(true),700);
+  }
+}
+function resumeProposal(){
+  const y=parseInt(localStorage.getItem(HERVEY_GATE_SCROLL_KEY)||'0',10);
+  unlockProposal(false);
+  setTimeout(()=>window.scrollTo({top:y,behavior:'smooth'}),120);
+}
+function startFresh(){localStorage.setItem(HERVEY_GATE_SCROLL_KEY,'0');unlockProposal(true)}
+const BOOK_APPOINTMENT_URL='https://calendar.app.google/GJ7K3jeX5gwihydj9';
+function showCtaMessage(msg,isError=false){
+  const el=document.getElementById('ctaMessage');
+  if(el){el.textContent=msg;el.style.display='block';el.style.color=isError?'var(--red)':'var(--pink)';}
+}
+async function submitFinalCTA(){
+  const form=document.getElementById('ctaForm');
+  const btn=document.getElementById('ctaSubmitBtn');
+  if(!form || !form.checkValidity()){form?.reportValidity();return;}
+  if(btn){btn.disabled=true;btn.textContent='Submitting...';}
+  showCtaMessage('Thank you. We are submitting your response and redirecting you to book an appointment.');
+  const formData=new FormData(form);
+  formData.append('page_url', window.location.href || 'Direct proposal file');
+  formData.append('submitted_at', new Date().toLocaleString());
+  formData.append('booking_redirect', BOOK_APPOINTMENT_URL);
+  try{
+    const res=await fetch(form.action,{method:'POST',body:formData,headers:{'Accept':'application/json'}});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok || data.success===false){throw new Error(data.message || 'Submission could not be confirmed');}
+    try{ if(typeof gtag==='function') gtag('event','proposal_final_form_submitted',{proposal:'Baby Catcher'}); }catch(e){}
+    window.location.href=BOOK_APPOINTMENT_URL;
+  }catch(err){
+    console.warn('Final form submission issue:',err);
+    showCtaMessage('The form could not be confirmed. Please check the required fields and try again.',true);
+    if(btn){btn.disabled=false;btn.textContent="I'm Ready. Let's Start Building →";}
+  }
+}
+window.addEventListener('beforeunload',()=>{if(!document.body.classList.contains('proposal-locked')){localStorage.setItem(HERVEY_GATE_SCROLL_KEY,String(window.scrollY||0));}});
+document.addEventListener('DOMContentLoaded',function(){
+  if(localStorage.getItem(HERVEY_GATE_KEY)==='yes'){
+    const gate=document.getElementById('gatePopup');
+    const resume=document.getElementById('resumePopup');
+    if(gate) gate.classList.remove('show');
+    if(resume) resume.classList.add('show');
+  }else{
+    document.documentElement.classList.add('proposal-locked');
+    document.body.classList.add('proposal-locked');
+    document.getElementById('gatePopup')?.classList.add('show');
+  }
+});
+
+/* REVEAL ON SCROLL */
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');obs.unobserve(e.target)}})},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+/* AUTO-SHOW AUDIO PLAYER */
+document.addEventListener('DOMContentLoaded',function(){try{document.getElementById('audio-player').classList.add('visible')}catch(e){}});
+</script>
+</body>
+</html>
