@@ -339,6 +339,9 @@ body:not(.proposal-locked) .gate-backdrop,
 body:not(.proposal-locked) .gate-popup{display:none!important;visibility:hidden!important;pointer-events:none!important}
 @media(max-width:560px){.gate-popup{padding:30px 22px}.gate-popup h3{font-size:28px}}
 
+
+.chapter-anchor{scroll-margin-top:90px}
+section{scroll-margin-top:90px}
 </style>
 </head>
 <body class="proposal-locked">
@@ -518,7 +521,7 @@ body:not(.proposal-locked) .gate-popup{display:none!important;visibility:hidden!
 <div class="niche-card" style="border-color:var(--pink);box-shadow:0 8px 32px var(--glow)"><div class="niche-icon">👑</div><h4>Premium — Baby Catcher+</h4><div class="pain">$6.99/month or $49.99/year</div><div class="pitch">Full book-based content library. Birth plan builder. Real birth stories from <em>Her Body, Her Baby</em>. Postpartum module. Personalized journal. Ad-free. <strong>This is where your content becomes recurring revenue.</strong></div></div>
 </div>
 
-<div class="reveal" style="margin-top:32px">
+<div class="reveal chapter-anchor" id="bookvsapp" style="margin-top:32px">
 <div class="compare-heading">Books vs. App: <em>The Revenue Shift</em></div>
 <div class="compare-sub">You already sell books. Here's what happens when you add an app to the same audience.</div>
 <div class="invest-vs">
@@ -692,7 +695,9 @@ body:not(.proposal-locked) .gate-popup{display:none!important;visibility:hidden!
 <li><strong>Mental Health Check-Ins</strong> Gentle self-assessment prompts with guidance on seeking professional support</li>
 <li><strong>PWI Integration</strong> Direct links to Premier Wellness Initiative classes, support groups, and wellness services</li>
 </ul></div>
-</div></section><div class="container">
+</div></section>
+<div class="divider-spacer"></div>
+<section id="techstack"><div class="container">
 <div class="reveal"><div class="section-label">11 · Tech Stack</div><h2 class="section-title">What Powers <em>Everything</em></h2><p class="section-lead">Enterprise-grade technology selected for performance, security, and scalability. Every layer is HIPAA-ready.</p></div>
 <div class="data-table-wrap reveal"><table class="data-table"><thead><tr><th style="width:22%">Layer</th><th style="width:28%">Technology</th><th style="width:50%">Why</th></tr></thead><tbody>
 <tr><td class="co-name">Mobile App</td><td class="num">React Native</td><td>Single codebase for iOS and Android. Faster development, lower cost, native performance. Used by Instagram, Shopify, and Bloomberg.</td></tr>
@@ -738,7 +743,7 @@ body:not(.proposal-locked) .gate-popup{display:none!important;visibility:hidden!
 </ul>
 </div>
 
-<div class="reveal" style="margin-top:40px">
+<div class="reveal chapter-anchor" id="investmentreturn" style="margin-top:40px">
 <div class="compare-heading">Investment vs. <em>Return</em></div>
 <div class="compare-sub">Here's what $20,000 buys you, and what it unlocks. This investment pays for itself within the first subscriber cycle.</div>
 <div class="invest-vs">
@@ -901,18 +906,24 @@ body:not(.proposal-locked) .gate-popup{display:none!important;visibility:hidden!
 <script>
 /* CHAPTERS */
 const chapters=[
-{t:0,l:"Welcome & Introduction",id:"intro"},
-{t:40,l:"Published Authority",id:"books"},
-{t:95,l:"The Big Idea",id:"bigidea"},
-{t:155,l:"Why This Works For You",id:"benefits"},
-{t:215,l:"The Problem & Market",id:"problem"},
-{t:280,l:"App Naming & HIPAA",id:"naming"},
-{t:320,l:"Revenue Model & Books vs App",id:"revenue"},
-{t:410,l:"Core Features Walkthrough",id:"features"},
-{t:490,l:"Tech Stack & Timeline",id:"timeline"},
-{t:540,l:"Investment & Returns",id:"investment"},
-{t:600,l:"Case Studies & Roadmap",id:"casestudies"},
-{t:650,l:"Our Commitment & Next Steps",id:"commitment"}
+{t:0,l:"Welcome & Intro",id:"hero"},
+{t:29,l:"Published Authority",id:"books"},
+{t:92,l:"The Big Idea",id:"bigidea"},
+{t:150,l:"Why This Works For You",id:"benefits"},
+{t:198,l:"The Problem",id:"problem"},
+{t:230,l:"The Market",id:"market"},
+{t:253,l:"App Name Suggestions",id:"naming"},
+{t:290,l:"Revenue Model",id:"revenue"},
+{t:327,l:"Book vs App",id:"bookvsapp"},
+{t:420,l:"Features Walkthrough",id:"features"},
+{t:512,l:"Tech Stack",id:"techstack"},
+{t:536,l:"Timeline",id:"timeline"},
+{t:563,l:"Investment",id:"investment"},
+{t:581,l:"Investment vs Return",id:"investmentreturn"},
+{t:653,l:"Case Studies",id:"casestudies"},
+{t:666,l:"Road Map",id:"roadmap"},
+{t:687,l:"Our Commitment",id:"commitment"},
+{t:712,l:"Next Steps",id:"nextsteps"}
 ];
 const audio=document.getElementById('narrationAudio');
 const player=document.getElementById('audio-player');
@@ -920,23 +931,26 @@ const apFill=document.getElementById('apProgressFill');
 const apCur=document.getElementById('apCurrentTime');
 const apDur=document.getElementById('apDuration');
 const chList=document.getElementById('chaptersList');
-let isPlaying=false,chapOpen=false;
+let isPlaying=false,chapOpen=false,lastActiveChapter=-1,lastAutoScrollAt=0,userInitiatedChapterClick=false;
 function fmtTime(s){const m=Math.floor(s/60);return m+':'+(Math.floor(s%60)+'').padStart(2,'0')}
 function scrollToChapterSection(sectionId){
   const el=document.getElementById(sectionId);
   if(!el)return;
   const topbar=document.querySelector('.topbar');
   const offset=(topbar?topbar.offsetHeight:0)+18;
-  const y=el.getBoundingClientRect().top+window.pageYOffset-offset;
-  window.scrollTo({top:y,behavior:'smooth'});
+  let y=el.getBoundingClientRect().top+window.pageYOffset-offset;
+  if(sectionId==='hero')y=0;
+  window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
   try{localStorage.setItem(HERVEY_GATE_SCROLL_KEY,String(Math.max(0,y)));}catch(e){}
 }
 function goToChapter(c){
+  userInitiatedChapterClick=true;
   if(audio){
     try{audio.currentTime=c.t;}catch(e){}
     if(!isPlaying)togglePlay();
   }
   scrollToChapterSection(c.id);
+  setTimeout(()=>{userInitiatedChapterClick=false;},900);
 }
 function buildChapters(){chList.innerHTML='';chapters.forEach((c,i)=>{const d=document.createElement('div');d.className='ap-chapter';d.setAttribute('role','button');d.setAttribute('tabindex','0');d.setAttribute('aria-label','Go to '+c.l);d.innerHTML=`<div class="ap-chapter-dot"></div><div class="ap-chapter-time">${fmtTime(c.t)}</div><div class="ap-chapter-label">${c.l}</div>`;d.onclick=()=>goToChapter(c);d.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();goToChapter(c)}};chList.appendChild(d)})}
 buildChapters();
@@ -956,8 +970,31 @@ audio.addEventListener('loadedmetadata',()=>{apDur.textContent=fmtTime(audio.dur
 audio.addEventListener('pause',()=>{isPlaying=false;setPlayIcons(false)});
 audio.addEventListener('play',()=>{isPlaying=true;setPlayIcons(true)});
 audio.addEventListener('ended',()=>{isPlaying=false;setPlayIcons(false)});
-audio.addEventListener('timeupdate',()=>{if(audio.duration){const pct=(audio.currentTime/audio.duration)*100;apFill.style.width=pct+'%';apCur.textContent=fmtTime(audio.currentTime)}
-const chs=document.querySelectorAll('.ap-chapter');chapters.forEach((c,i)=>{const next=chapters[i+1];const act=audio.currentTime>=c.t&&(!next||audio.currentTime<next.t);chs[i]&&(chs[i].className='ap-chapter'+(act?' active':''))})});
+audio.addEventListener('timeupdate',()=>{
+  if(audio.duration){
+    const pct=(audio.currentTime/audio.duration)*100;
+    apFill.style.width=pct+'%';
+    apCur.textContent=fmtTime(audio.currentTime);
+  }
+  const chs=document.querySelectorAll('.ap-chapter');
+  let activeIndex=-1;
+  chapters.forEach((c,i)=>{
+    const next=chapters[i+1];
+    const act=audio.currentTime>=c.t&&(!next||audio.currentTime<next.t);
+    if(act)activeIndex=i;
+    chs[i]&&(chs[i].className='ap-chapter'+(act?' active':''));
+  });
+  if(activeIndex!==-1&&activeIndex!==lastActiveChapter){
+    lastActiveChapter=activeIndex;
+    const activeEl=chs[activeIndex];
+    if(activeEl&&chapOpen){activeEl.scrollIntoView({block:'nearest',behavior:'smooth'});}
+    const now=Date.now();
+    if(isPlaying&&!userInitiatedChapterClick&&now-lastAutoScrollAt>800){
+      lastAutoScrollAt=now;
+      scrollToChapterSection(chapters[activeIndex].id);
+    }
+  }
+});
 function seekAudio(e){const r=document.getElementById('apProgressBar').getBoundingClientRect();const pct=(e.clientX-r.left)/r.width;audio.currentTime=pct*audio.duration}
 /* PHONE SLIDESHOW */
 function pMove(btn,dir){const wrap=btn.closest('.phone-wrap')||btn.closest('[data-demo]').querySelector('.phone-wrap')||btn.parentElement.parentElement.querySelector('.phone-device')?.parentElement;if(!wrap)return;const track=wrap.querySelector('.phone-track');const slides=track.querySelectorAll('.phone-slide');const dots=wrap.parentElement.querySelectorAll('.phone-dot');const lbl=wrap.parentElement.querySelector('.phone-lbl');let cur=parseInt(track.dataset.cur||0);cur+=dir;if(cur<0)cur=slides.length-1;if(cur>=slides.length)cur=0;track.style.transform=`translateX(-${cur*100}%)`;track.dataset.cur=cur;dots.forEach((d,i)=>d.classList.toggle('on',i===cur));if(lbl){const labels=JSON.parse(lbl.dataset.labels||'[]');lbl.innerHTML=`<span>${cur+1}</span> / ${slides.length} — ${labels[cur]||''}`}}
