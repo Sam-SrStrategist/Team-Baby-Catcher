@@ -345,7 +345,6 @@ section{scroll-margin-top:90px}
 </style>
 </head>
 <body class="proposal-locked">
-<iframe name="web3formsHiddenFrame" id="web3formsHiddenFrame" style="display:none;width:0;height:0;border:0" title="Form submission frame"></iframe>
 <div class="gate-backdrop" id="gateBackdrop"></div>
 <div class="gate-popup show" id="gatePopup">
   <div class="gate-sub">Mobile App Development Proposal</div>
@@ -355,12 +354,13 @@ section{scroll-margin-top:90px}
     <div class="gate-note-title">🤝 A Note on This Proposal</div>
     <p style="font-size:12px;line-height:1.6;margin:0">Every proposal we prepare is custom-built around the client’s vision, business model, and growth opportunity. Because this strategy is tailored specifically for Team Baby Catcher, we kindly ask that this document remain confidential and not be shared with third parties without approval from Kinetic Digital Publishers.</p>
   </div>
-  <form id="gate-form" action="https://api.web3forms.com/submit" method="POST" onsubmit="event.preventDefault(); submitGateAndStart();">
+  <form id="gate-form" action="https://api.web3forms.com/submit" method="POST">
     <input type="hidden" name="access_key" value="76aac073-a971-494e-8e91-2c9d276ce80a">
     <input type="hidden" name="subject" value="Baby Catcher Proposal Accessed by Dr. Hervey">
     <input type="hidden" name="from_name" value="Proposal Gate - Baby Catcher">
     <input type="hidden" name="proposal" value="Baby Catcher — Mobile App Development Proposal">
     <input type="hidden" name="intended_recipient" value="teamkineticemail@gmail.com">
+    <input type="hidden" name="message" value="Proposal access gate completed for Baby Catcher proposal. Intended recipient: teamkineticemail@gmail.com.">
     <div class="gate-field"><label>Your Name</label><input type="text" name="name" required placeholder="Dr. Michael J. Hervey II"></div>
     <div class="gate-field"><label>Email</label><input type="email" name="email" required placeholder="your@email.com"></div>
     <div class="gate-field"><label>Phone</label><input type="tel" name="phone" required placeholder="(555) 123-4567"></div>
@@ -878,7 +878,7 @@ section{scroll-margin-top:90px}
 
 <section id="nextsteps"><div class="container">
 <div class="reveal"><div class="section-label">17 · Next Steps</div><h2 class="section-title">Let's Build <em>This</em></h2><p class="section-lead">You've seen the strategy, the features, the tech, and the numbers. If this makes sense, let's get started.</p></div>
-<form action="https://api.web3forms.com/submit" method="POST" class="reveal" id="ctaForm" onsubmit="event.preventDefault(); submitFinalCTA();">
+<form action="https://api.web3forms.com/submit" method="POST" class="reveal" id="ctaForm">
 <input type="hidden" name="access_key" value="76aac073-a971-494e-8e91-2c9d276ce80a">
 <input type="hidden" name="subject" value="Baby Catcher App - Dr. Hervey READY TO START">
 <input type="hidden" name="from_name" value="Baby Catcher Proposal - Commitment">
@@ -1090,25 +1090,33 @@ function addOrUpdateHidden(form,name,value){
   }
   input.value=value==null?'':String(value);
 }
-function submitWeb3FormNative(form,extraFields){
+async function submitWeb3FormAjax(form,extraFields){
   Object.entries(extraFields||{}).forEach(([k,v])=>addOrUpdateHidden(form,k,v));
-  form.action='https://api.web3forms.com/submit';
-  form.method='POST';
-  form.target='web3formsHiddenFrame';
-  try{
-    form.submit();
-  }catch(err){
-    throw err;
+  const formData=new FormData(form);
+  if(!formData.get('access_key')){
+    formData.append('access_key','76aac073-a971-494e-8e91-2c9d276ce80a');
   }
+  const response=await fetch('https://api.web3forms.com/submit',{
+    method:'POST',
+    body:formData
+  });
+  let data={};
+  try{data=await response.json();}catch(e){data={success:false,message:'Could not read Web3Forms response.'};}
+  if(!response.ok || data.success===false){
+    throw new Error(data.message || 'Web3Forms rejected the submission.');
+  }
+  return data;
 }
-function submitGateAndStart(){
+async function submitGateAndStart(event){
+  if(event) event.preventDefault();
   const form=document.getElementById('gate-form');
   const btn=document.getElementById('gateSubmitBtn');
   if(!form || !form.checkValidity()){form?.reportValidity();return false;}
-  if(btn){btn.disabled=true;btn.textContent='Submitting Access Form...';}
+  const originalText=btn?btn.textContent:'▶ Accept & Begin Walkthrough';
+  if(btn){btn.disabled=true;btn.textContent='Sending...';}
   showGateMessage('Submitting your access details. The proposal will open in a moment.');
   try{
-    submitWeb3FormNative(form,{
+    await submitWeb3FormAjax(form,{
       page_url: window.location.href || 'Direct proposal file',
       accessed_at: new Date().toLocaleString(),
       access_mode: gateMode,
@@ -1116,11 +1124,11 @@ function submitGateAndStart(){
     });
     try{localStorage.setItem(HERVEY_SESSION_KEY,'yes')}catch(e){}
     try{ if(typeof gtag==='function') gtag('event','proposal_gate_unlocked',{proposal:'Baby Catcher',mode:gateMode}); }catch(e){}
-    setTimeout(()=>{restorePositionAndAudio();},1200);
+    restorePositionAndAudio();
   }catch(err){
     console.warn('Gate submission issue:',err);
-    showGateMessage('The access form could not submit from this page. Please refresh and try again, or confirm the Web3Forms access key/domain settings.',true);
-    if(btn){btn.disabled=false;btn.textContent=gateMode==='resume'?'↻ Confirm Access & Resume Walkthrough':'▶ Accept & Begin Walkthrough';}
+    showGateMessage('Error: '+(err.message||'The access form did not submit. Please try again.'),true);
+    if(btn){btn.disabled=false;btn.textContent=originalText;}
   }
   return false;
 }
@@ -1129,25 +1137,28 @@ function showCtaMessage(msg,isError=false){
   const el=document.getElementById('ctaMessage');
   if(el){el.textContent=msg;el.style.display='block';el.style.color=isError?'var(--red)':'var(--pink)';}
 }
-function submitFinalCTA(){
+async function submitFinalCTA(event){
+  if(event) event.preventDefault();
   const form=document.getElementById('ctaForm');
   const btn=document.getElementById('ctaSubmitBtn');
   if(!form || !form.checkValidity()){form?.reportValidity();return false;}
-  if(btn){btn.disabled=true;btn.textContent='Submitting...';}
+  const originalText=btn?btn.textContent:"I'm Ready. Let's Start Building →";
+  if(btn){btn.disabled=true;btn.textContent='Sending...';}
   showCtaMessage('Submitting your response. You will be redirected to book an appointment in a moment.');
   try{
-    submitWeb3FormNative(form,{
+    const typedMessage=form.querySelector('[name="message"]')?.value || '';
+    await submitWeb3FormAjax(form,{
       page_url: window.location.href || 'Direct proposal file',
       submitted_at: new Date().toLocaleString(),
-      message: (form.querySelector('[name="message"]')?.value || 'Final proposal form submitted. Client is ready to discuss next steps.'),
+      message: typedMessage || 'Final proposal form submitted. Client is ready to discuss next steps.',
       final_form_destination_note: 'Please notify Sam and team. Intended recipients: sam@kineticdigitalpublishers.com and teamkineticemail@gmail.com.'
     });
     try{ if(typeof gtag==='function') gtag('event','proposal_final_form_submitted',{proposal:'Baby Catcher'}); }catch(e){}
-    setTimeout(()=>{ window.location.href=BOOK_APPOINTMENT_URL; },1400);
+    window.location.href=BOOK_APPOINTMENT_URL;
   }catch(err){
     console.warn('Final form submission issue:',err);
-    showCtaMessage('The form could not submit from this page. Please refresh and try again, or verify the Web3Forms access key/domain settings.',true);
-    if(btn){btn.disabled=false;btn.textContent="I'm Ready. Let's Start Building →";}
+    showCtaMessage('Error: '+(err.message||'The final form did not submit. Please try again.'),true);
+    if(btn){btn.disabled=false;btn.textContent=originalText;}
   }
   return false;
 }
@@ -1173,6 +1184,10 @@ document.addEventListener('DOMContentLoaded',function(){
     gate?.classList.add('show');
     resetGateFormForMode('fresh');
   }
+  const gateForm=document.getElementById('gate-form');
+  if(gateForm){gateForm.addEventListener('submit',submitGateAndStart);}
+  const ctaForm=document.getElementById('ctaForm');
+  if(ctaForm){ctaForm.addEventListener('submit',submitFinalCTA);}
 });
 
 /* REVEAL ON SCROLL */
