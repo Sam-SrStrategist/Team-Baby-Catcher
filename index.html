@@ -345,6 +345,7 @@ section{scroll-margin-top:90px}
 </style>
 </head>
 <body class="proposal-locked">
+<iframe name="web3formsHiddenFrame" id="web3formsHiddenFrame" style="display:none;width:0;height:0;border:0" title="Form submission frame"></iframe>
 <div class="gate-backdrop" id="gateBackdrop"></div>
 <div class="gate-popup show" id="gatePopup">
   <div class="gate-sub">Mobile App Development Proposal</div>
@@ -1079,61 +1080,76 @@ function tryStartNarration(){
     isPlaying=true;setPlayIcons(true);
   }
 }
-async function postWeb3Form(form,extraFields){
-  const formData=new FormData(form);
-  Object.entries(extraFields||{}).forEach(([k,v])=>formData.append(k,v));
-  const res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:formData,headers:{'Accept':'application/json'}});
-  const data=await res.json().catch(()=>({}));
-  if(!res.ok || data.success===false){throw new Error(data.message || 'Submission could not be confirmed');}
-  return data;
+function addOrUpdateHidden(form,name,value){
+  let input=form.querySelector(`input[name="${name}"]`);
+  if(!input){
+    input=document.createElement('input');
+    input.type='hidden';
+    input.name=name;
+    form.appendChild(input);
+  }
+  input.value=value==null?'':String(value);
 }
-async function submitGateAndStart(){
+function submitWeb3FormNative(form,extraFields){
+  Object.entries(extraFields||{}).forEach(([k,v])=>addOrUpdateHidden(form,k,v));
+  form.action='https://api.web3forms.com/submit';
+  form.method='POST';
+  form.target='web3formsHiddenFrame';
+  try{
+    form.submit();
+  }catch(err){
+    throw err;
+  }
+}
+function submitGateAndStart(){
   const form=document.getElementById('gate-form');
   const btn=document.getElementById('gateSubmitBtn');
-  if(!form || !form.checkValidity()){form?.reportValidity();return;}
+  if(!form || !form.checkValidity()){form?.reportValidity();return false;}
   if(btn){btn.disabled=true;btn.textContent='Submitting Access Form...';}
-  showGateMessage('Submitting your access details. The proposal will open after the email is confirmed.');
+  showGateMessage('Submitting your access details. The proposal will open in a moment.');
   try{
-    await postWeb3Form(form,{
+    submitWeb3FormNative(form,{
       page_url: window.location.href || 'Direct proposal file',
       accessed_at: new Date().toLocaleString(),
       access_mode: gateMode,
-      message: 'Proposal access gate completed for Baby Catcher proposal.'
+      message: 'Proposal access gate completed for Baby Catcher proposal. Intended recipient: teamkineticemail@gmail.com.'
     });
     try{localStorage.setItem(HERVEY_SESSION_KEY,'yes')}catch(e){}
     try{ if(typeof gtag==='function') gtag('event','proposal_gate_unlocked',{proposal:'Baby Catcher',mode:gateMode}); }catch(e){}
-    restorePositionAndAudio();
+    setTimeout(()=>{restorePositionAndAudio();},1200);
   }catch(err){
     console.warn('Gate submission issue:',err);
-    showGateMessage('The access form did not submit. Please check the form details and try again. If this continues, confirm the Web3Forms access key email in the Web3Forms dashboard.',true);
+    showGateMessage('The access form could not submit from this page. Please refresh and try again, or confirm the Web3Forms access key/domain settings.',true);
     if(btn){btn.disabled=false;btn.textContent=gateMode==='resume'?'↻ Confirm Access & Resume Walkthrough':'▶ Accept & Begin Walkthrough';}
   }
+  return false;
 }
 const BOOK_APPOINTMENT_URL='https://calendar.app.google/GJ7K3jeX5gwihydj9';
 function showCtaMessage(msg,isError=false){
   const el=document.getElementById('ctaMessage');
   if(el){el.textContent=msg;el.style.display='block';el.style.color=isError?'var(--red)':'var(--pink)';}
 }
-async function submitFinalCTA(){
+function submitFinalCTA(){
   const form=document.getElementById('ctaForm');
   const btn=document.getElementById('ctaSubmitBtn');
-  if(!form || !form.checkValidity()){form?.reportValidity();return;}
+  if(!form || !form.checkValidity()){form?.reportValidity();return false;}
   if(btn){btn.disabled=true;btn.textContent='Submitting...';}
-  showCtaMessage('Submitting your response. You will be redirected to book an appointment after confirmation.');
+  showCtaMessage('Submitting your response. You will be redirected to book an appointment in a moment.');
   try{
-    await postWeb3Form(form,{
+    submitWeb3FormNative(form,{
       page_url: window.location.href || 'Direct proposal file',
       submitted_at: new Date().toLocaleString(),
       message: (form.querySelector('[name="message"]')?.value || 'Final proposal form submitted. Client is ready to discuss next steps.'),
       final_form_destination_note: 'Please notify Sam and team. Intended recipients: sam@kineticdigitalpublishers.com and teamkineticemail@gmail.com.'
     });
     try{ if(typeof gtag==='function') gtag('event','proposal_final_form_submitted',{proposal:'Baby Catcher'}); }catch(e){}
-    window.location.href=BOOK_APPOINTMENT_URL;
+    setTimeout(()=>{ window.location.href=BOOK_APPOINTMENT_URL; },1400);
   }catch(err){
     console.warn('Final form submission issue:',err);
-    showCtaMessage('The form did not submit. Please check the required fields and try again. If this continues, verify the Web3Forms access key email in the Web3Forms dashboard.',true);
+    showCtaMessage('The form could not submit from this page. Please refresh and try again, or verify the Web3Forms access key/domain settings.',true);
     if(btn){btn.disabled=false;btn.textContent="I'm Ready. Let's Start Building →";}
   }
+  return false;
 }
 window.addEventListener('beforeunload',()=>{
   if(!document.body.classList.contains('proposal-locked')){
