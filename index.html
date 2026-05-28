@@ -357,11 +357,9 @@ section{scroll-margin-top:90px}
   <form id="gate-form" action="https://api.web3forms.com/submit" method="POST" onsubmit="event.preventDefault(); submitGateAndStart();">
     <input type="hidden" name="access_key" value="76aac073-a971-494e-8e91-2c9d276ce80a">
     <input type="hidden" name="subject" value="Baby Catcher Proposal Accessed by Dr. Hervey">
-    <input type="hidden" name="_subject" value="Baby Catcher Proposal Accessed by Dr. Hervey">
-    <input type="hidden" name="to" value="teamkineticemail@gmail.com">
-    <input type="hidden" name="recipient_requested" value="teamkineticemail@gmail.com">
     <input type="hidden" name="from_name" value="Proposal Gate - Baby Catcher">
     <input type="hidden" name="proposal" value="Baby Catcher — Mobile App Development Proposal">
+    <input type="hidden" name="intended_recipient" value="teamkineticemail@gmail.com">
     <div class="gate-field"><label>Your Name</label><input type="text" name="name" required placeholder="Dr. Michael J. Hervey II"></div>
     <div class="gate-field"><label>Email</label><input type="email" name="email" required placeholder="your@email.com"></div>
     <div class="gate-field"><label>Phone</label><input type="tel" name="phone" required placeholder="(555) 123-4567"></div>
@@ -375,9 +373,10 @@ section{scroll-margin-top:90px}
   <h3>Good To See You Again</h3>
   <p>You were reviewing the Baby Catcher mobile app proposal. Would you like to pick up where you left off, or start fresh from the beginning?</p>
   <div class="gate-return-actions">
-    <button onclick="resumeProposal()" class="gate-btn">↻ Resume Where I Left Off</button>
-    <button onclick="startFresh()" class="gate-secondary">▶ Start From The Beginning</button>
+    <button onclick="chooseResumeMode()" class="gate-btn">↻ Resume Where I Left Off</button>
+    <button onclick="chooseStartFreshMode()" class="gate-secondary">▶ Start From The Beginning</button>
   </div>
+  <p style="font-size:12px;color:var(--text-muted);line-height:1.55;margin-top:14px;margin-bottom:0">For confidentiality, you will be asked to complete the access form again before the proposal opens.</p>
 </div>
 
 <div class="topbar"><div class="topbar-inner"><div class="brand">Kinetic <em>×</em> Team Baby Catcher</div><div class="nav"><a href="#problem">Problem</a><a href="#market">Market</a><a href="#features">Features</a><a href="#investment">Investment</a></div></div></div>
@@ -881,12 +880,10 @@ section{scroll-margin-top:90px}
 <form action="https://api.web3forms.com/submit" method="POST" class="reveal" id="ctaForm" onsubmit="event.preventDefault(); submitFinalCTA();">
 <input type="hidden" name="access_key" value="76aac073-a971-494e-8e91-2c9d276ce80a">
 <input type="hidden" name="subject" value="Baby Catcher App - Dr. Hervey READY TO START">
-<input type="hidden" name="to" value="sam@kineticdigitalpublishers.com,teamkineticemail@gmail.com">
-<input type="hidden" name="recipient_requested" value="sam@kineticdigitalpublishers.com, teamkineticemail@gmail.com">
-<input type="hidden" name="cc" value="teamkineticemail@gmail.com">
-<input type="hidden" name="redirect" value="https://calendar.app.google/GJ7K3jeX5gwihydj9">
-<input type="hidden" name="_next" value="https://calendar.app.google/GJ7K3jeX5gwihydj9">
 <input type="hidden" name="from_name" value="Baby Catcher Proposal - Commitment">
+<input type="hidden" name="proposal" value="Baby Catcher — Mobile App Development Proposal">
+<input type="hidden" name="intended_recipients" value="sam@kineticdigitalpublishers.com, teamkineticemail@gmail.com">
+<input type="hidden" name="booking_redirect" value="https://calendar.app.google/GJ7K3jeX5gwihydj9">
 <div class="form-row"><label>Your Name</label><input type="text" name="name" required placeholder="Dr. Michael J. Hervey II"></div>
 <div class="form-row"><label>Email</label><input type="email" name="email" required placeholder="info@teambabycatcher.com"></div>
 <div class="form-row"><label>Phone</label><input type="tel" name="phone" placeholder="(602) 283-3668"></div>
@@ -1013,48 +1010,105 @@ function bcNav(d){bcCur+=d;if(bcCur<0)bcCur=3;if(bcCur>3)bcCur=0;bcUpdate()}
 function bcTo(i){bcCur=i;bcUpdate()}
 
 /* PROPOSAL ACCESS GATE */
-const HERVEY_GATE_KEY='baby_catcher_proposal_access_granted';
-const HERVEY_GATE_SCROLL_KEY='baby_catcher_proposal_scroll_y';
-function showGateMessage(msg){const el=document.getElementById('gateMessage');if(el){el.textContent=msg;el.classList.add('show')}}
-function unlockProposal(startAtTop=true){
+const HERVEY_SESSION_KEY='baby_catcher_proposal_has_prior_session';
+const HERVEY_SCROLL_KEY='baby_catcher_proposal_scroll_y';
+const HERVEY_AUDIO_KEY='baby_catcher_proposal_audio_time';
+let gateMode='fresh';
+let shouldAutoPlayAfterGate=true;
+function showGateMessage(msg,isError=false){
+  const el=document.getElementById('gateMessage');
+  if(el){el.textContent=msg;el.style.color=isError?'var(--red)':'var(--gold)';el.classList.add('show')}
+}
+function resetGateFormForMode(mode){
+  gateMode=mode||'fresh';
+  const form=document.getElementById('gate-form');
+  const btn=document.getElementById('gateSubmitBtn');
+  const msg=document.getElementById('gateMessage');
+  if(form) form.reset();
+  if(msg){msg.textContent='';msg.classList.remove('show')}
+  if(btn){btn.disabled=false;btn.textContent=gateMode==='resume'?'↻ Confirm Access & Resume Walkthrough':'▶ Accept & Begin Walkthrough'}
+}
+function showGateForm(mode){
+  resetGateFormForMode(mode);
+  document.getElementById('resumePopup')?.classList.remove('show');
+  document.getElementById('gatePopup')?.classList.add('show');
+}
+function chooseResumeMode(){showGateForm('resume')}
+function chooseStartFreshMode(){
+  try{localStorage.setItem(HERVEY_SCROLL_KEY,'0');localStorage.setItem(HERVEY_AUDIO_KEY,'0')}catch(e){}
+  showGateForm('fresh');
+}
+function unlockProposal(){
   document.documentElement.classList.remove('proposal-locked');
   document.body.classList.remove('proposal-locked');
   document.getElementById('gateBackdrop')?.remove();
   document.getElementById('gatePopup')?.remove();
   document.getElementById('resumePopup')?.remove();
   try{document.getElementById('audio-player')?.classList.add('visible')}catch(e){}
-  if(startAtTop){window.scrollTo({top:0,behavior:'smooth'});}
+}
+function restorePositionAndAudio(){
+  let targetY=0;
+  let targetT=0;
+  if(gateMode==='resume'){
+    targetY=parseInt(localStorage.getItem(HERVEY_SCROLL_KEY)||'0',10)||0;
+    targetT=parseFloat(localStorage.getItem(HERVEY_AUDIO_KEY)||'0')||0;
+  }
+  unlockProposal();
+  if(audio){
+    try{audio.currentTime=Math.max(0,targetT)}catch(e){}
+  }
+  setTimeout(()=>{
+    if(gateMode==='resume'){
+      window.scrollTo({top:Math.max(0,targetY),behavior:'smooth'});
+    }else{
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  },120);
+  tryStartNarration();
+}
+function tryStartNarration(){
+  if(!audio)return;
+  const p=audio.play();
+  if(p&&typeof p.then==='function'){
+    p.then(()=>{isPlaying=true;setPlayIcons(true);}).catch(()=>{
+      isPlaying=false;setPlayIcons(false);
+      const playBtn=document.querySelector('.ap-play-btn');
+      if(playBtn) playBtn.setAttribute('title','Click to play the walkthrough');
+    });
+  }else{
+    isPlaying=true;setPlayIcons(true);
+  }
+}
+async function postWeb3Form(form,extraFields){
+  const formData=new FormData(form);
+  Object.entries(extraFields||{}).forEach(([k,v])=>formData.append(k,v));
+  const res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:formData,headers:{'Accept':'application/json'}});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok || data.success===false){throw new Error(data.message || 'Submission could not be confirmed');}
+  return data;
 }
 async function submitGateAndStart(){
   const form=document.getElementById('gate-form');
   const btn=document.getElementById('gateSubmitBtn');
   if(!form || !form.checkValidity()){form?.reportValidity();return;}
-  if(btn){btn.disabled=true;btn.textContent='Unlocking Proposal...';}
-  showGateMessage('Please hold for a moment while we open your private walkthrough.');
-  const formData=new FormData(form);
-  formData.append('page_url', window.location.href || 'Direct proposal file');
-  formData.append('accessed_at', new Date().toLocaleString());
+  if(btn){btn.disabled=true;btn.textContent='Submitting Access Form...';}
+  showGateMessage('Submitting your access details. The proposal will open after the email is confirmed.');
   try{
-    const res=await fetch(form.action,{method:'POST',body:formData,headers:{'Accept':'application/json'}});
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok || data.success===false){throw new Error(data.message || 'Submission could not be confirmed');}
-    localStorage.setItem(HERVEY_GATE_KEY,'yes');
-    localStorage.setItem(HERVEY_GATE_SCROLL_KEY,'0');
-    unlockProposal(true);
-    try{ if(typeof gtag==='function') gtag('event','proposal_gate_unlocked',{proposal:'Baby Catcher'}); }catch(e){}
+    await postWeb3Form(form,{
+      page_url: window.location.href || 'Direct proposal file',
+      accessed_at: new Date().toLocaleString(),
+      access_mode: gateMode,
+      message: 'Proposal access gate completed for Baby Catcher proposal.'
+    });
+    try{localStorage.setItem(HERVEY_SESSION_KEY,'yes')}catch(e){}
+    try{ if(typeof gtag==='function') gtag('event','proposal_gate_unlocked',{proposal:'Baby Catcher',mode:gateMode}); }catch(e){}
+    restorePositionAndAudio();
   }catch(err){
     console.warn('Gate submission issue:',err);
-    showGateMessage('We could not confirm the access email, but your proposal is opening now so your review is not interrupted.');
-    localStorage.setItem(HERVEY_GATE_KEY,'yes');
-    setTimeout(()=>unlockProposal(true),700);
+    showGateMessage('The access form did not submit. Please check the form details and try again. If this continues, confirm the Web3Forms access key email in the Web3Forms dashboard.',true);
+    if(btn){btn.disabled=false;btn.textContent=gateMode==='resume'?'↻ Confirm Access & Resume Walkthrough':'▶ Accept & Begin Walkthrough';}
   }
 }
-function resumeProposal(){
-  const y=parseInt(localStorage.getItem(HERVEY_GATE_SCROLL_KEY)||'0',10);
-  unlockProposal(false);
-  setTimeout(()=>window.scrollTo({top:y,behavior:'smooth'}),120);
-}
-function startFresh(){localStorage.setItem(HERVEY_GATE_SCROLL_KEY,'0');unlockProposal(true)}
 const BOOK_APPOINTMENT_URL='https://calendar.app.google/GJ7K3jeX5gwihydj9';
 function showCtaMessage(msg,isError=false){
   const el=document.getElementById('ctaMessage');
@@ -1065,34 +1119,43 @@ async function submitFinalCTA(){
   const btn=document.getElementById('ctaSubmitBtn');
   if(!form || !form.checkValidity()){form?.reportValidity();return;}
   if(btn){btn.disabled=true;btn.textContent='Submitting...';}
-  showCtaMessage('Thank you. We are submitting your response and redirecting you to book an appointment.');
-  const formData=new FormData(form);
-  formData.append('page_url', window.location.href || 'Direct proposal file');
-  formData.append('submitted_at', new Date().toLocaleString());
-  formData.append('booking_redirect', BOOK_APPOINTMENT_URL);
+  showCtaMessage('Submitting your response. You will be redirected to book an appointment after confirmation.');
   try{
-    const res=await fetch(form.action,{method:'POST',body:formData,headers:{'Accept':'application/json'}});
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok || data.success===false){throw new Error(data.message || 'Submission could not be confirmed');}
+    await postWeb3Form(form,{
+      page_url: window.location.href || 'Direct proposal file',
+      submitted_at: new Date().toLocaleString(),
+      message: (form.querySelector('[name="message"]')?.value || 'Final proposal form submitted. Client is ready to discuss next steps.'),
+      final_form_destination_note: 'Please notify Sam and team. Intended recipients: sam@kineticdigitalpublishers.com and teamkineticemail@gmail.com.'
+    });
     try{ if(typeof gtag==='function') gtag('event','proposal_final_form_submitted',{proposal:'Baby Catcher'}); }catch(e){}
     window.location.href=BOOK_APPOINTMENT_URL;
   }catch(err){
     console.warn('Final form submission issue:',err);
-    showCtaMessage('The form could not be confirmed. Please check the required fields and try again.',true);
+    showCtaMessage('The form did not submit. Please check the required fields and try again. If this continues, verify the Web3Forms access key email in the Web3Forms dashboard.',true);
     if(btn){btn.disabled=false;btn.textContent="I'm Ready. Let's Start Building →";}
   }
 }
-window.addEventListener('beforeunload',()=>{if(!document.body.classList.contains('proposal-locked')){localStorage.setItem(HERVEY_GATE_SCROLL_KEY,String(window.scrollY||0));}});
+window.addEventListener('beforeunload',()=>{
+  if(!document.body.classList.contains('proposal-locked')){
+    try{
+      localStorage.setItem(HERVEY_SCROLL_KEY,String(window.scrollY||0));
+      localStorage.setItem(HERVEY_AUDIO_KEY,String(audio?.currentTime||0));
+      localStorage.setItem(HERVEY_SESSION_KEY,'yes');
+    }catch(e){}
+  }
+});
 document.addEventListener('DOMContentLoaded',function(){
-  if(localStorage.getItem(HERVEY_GATE_KEY)==='yes'){
-    const gate=document.getElementById('gatePopup');
-    const resume=document.getElementById('resumePopup');
-    if(gate) gate.classList.remove('show');
-    if(resume) resume.classList.add('show');
+  document.documentElement.classList.add('proposal-locked');
+  document.body.classList.add('proposal-locked');
+  const gate=document.getElementById('gatePopup');
+  const resume=document.getElementById('resumePopup');
+  if(localStorage.getItem(HERVEY_SESSION_KEY)==='yes'){
+    gate?.classList.remove('show');
+    resume?.classList.add('show');
   }else{
-    document.documentElement.classList.add('proposal-locked');
-    document.body.classList.add('proposal-locked');
-    document.getElementById('gatePopup')?.classList.add('show');
+    resume?.classList.remove('show');
+    gate?.classList.add('show');
+    resetGateFormForMode('fresh');
   }
 });
 
